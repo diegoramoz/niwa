@@ -5,8 +5,10 @@ import { db } from "@/server/db";
 import {
   bug as bugTable,
   insertBugSchema,
+  insertPlanSchema,
   insertUserSchema,
   insertWidgetSchema,
+  plan as planTable,
   user as userTable,
   widget as widgetTable,
 } from "@/server/db/schema";
@@ -77,10 +79,23 @@ const bugRouter = {
     }),
 };
 
+const planRouter = {
+  create: os
+    .input(insertPlanSchema.pick({ type: true, userId: true }))
+    .handler(async ({ input }) => {
+      const [planRecord] = await db.insert(planTable).values(input).returning();
+      if (!planRecord) {
+        throw new Error("Failed to create plan");
+      }
+      return { plan: planRecord };
+    }),
+};
+
 export const appRouter = {
   widget: widgetRouter,
   user: userRouter,
   bug: bugRouter,
+  plan: planRouter,
 };
 
 export type AppRouter = typeof appRouter;

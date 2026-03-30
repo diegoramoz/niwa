@@ -54,6 +54,7 @@ export const user = pgTable(
 
 export const userRelations = relations(user, ({ many }) => ({
   posts: many(post),
+  plans: many(plan),
 }));
 
 export const selectUserSchema = createSelectSchema(user);
@@ -269,4 +270,52 @@ export const insertBugSchema = createInsertSchema(bug, {
     .max(1000, "Cannot exceed 1000 characters"),
 }).strict();
 
-export default { user, post, widget, bug };
+// ─── PLAN TABLE ───────────────────────────────────────────────────────────────
+
+export const planTypeEnum = pgEnum("plan_type", ["basic", "pro"]);
+
+export type PlanType = (typeof planTypeEnum.enumValues)[number];
+
+export const plan = pgTable(
+  "plan",
+  {
+    id: bigint("id", { mode: "bigint" })
+      .primaryKey()
+      .generatedAlwaysAsIdentity(),
+
+    nanoId: varchar("nano_id", { length: NANO_ID_LENGTH })
+      .$defaultFn(() => myNanoid())
+      .notNull()
+      .unique(),
+
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$defaultFn(() => new Date())
+      .$onUpdate(() => new Date())
+      .notNull(),
+
+    type: planTypeEnum("type").notNull(),
+
+    userId: bigint("user_id", { mode: "bigint" })
+      .notNull()
+      .references(() => user.id),
+  },
+  (t) => [
+    uniqueIndex("plan_nano_id_idx").on(t.nanoId),
+    index("plan_user_id_idx").on(t.userId),
+  ]
+);
+
+export const planRelations = relations(plan, ({ one }) => ({
+  user: one(user, { fields: [plan.userId], references: [user.id] }),
+}));
+
+export const selectPlanSchema = createSelectSchema(plan);
+
+export const insertPlanSchema = createInsertSchema(plan, {
+  type: enumField(planTypeEnum.enumValues, { label: "Plan" }),
+}).strict();
+
+export default { user, post, widget, bug, plan };
