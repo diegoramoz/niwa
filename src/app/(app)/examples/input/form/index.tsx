@@ -1,27 +1,15 @@
 "use client";
 
-import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { Save } from "lucide-react";
-import { Form } from "@/components/form";
-import { TextInput } from "@/components/form/primitives/text-input";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Form, useAppForm } from "@/components/form";
 import { Button } from "@/components/ui/button";
-import { useOnSubmit } from "./on-submit";
+import { orpc } from "@/lib/orpc";
 import { createUserFormSchema } from "./schema";
 
-export const { fieldContext, formContext, useFieldContext } =
-  createFormHookContexts();
-
-const { useAppForm } = createFormHook({
-  fieldContext,
-  formContext,
-  fieldComponents: {
-    TextInput,
-  },
-  formComponents: {},
-});
-
 export function CreateUserForm({ redirect }: { redirect: string }) {
-  const onSubmit = useOnSubmit({ redirect });
+  const router = useRouter();
 
   const form = useAppForm({
     defaultValues: {
@@ -31,7 +19,16 @@ export function CreateUserForm({ redirect }: { redirect: string }) {
     validators: {
       onChange: createUserFormSchema,
     },
-    onSubmit,
+    onSubmit: async ({ value }) => {
+      try {
+        toast("Creating user...");
+        await orpc.user.create(value);
+        toast("User created, redirecting...");
+        router.push(redirect);
+      } catch {
+        toast("Error creating user");
+      }
+    },
   });
 
   return (
@@ -43,24 +40,22 @@ export function CreateUserForm({ redirect }: { redirect: string }) {
       }}
     >
       <form.AppField name="email">
-        {(field) => {
-          const schema = createUserFormSchema.shape.email;
-          return <field.TextInput {...{ useFieldContext, schema }} />;
-        }}
+        {(field) => (
+          <field.TextInput schema={createUserFormSchema.shape.email} />
+        )}
       </form.AppField>
 
       <form.AppField name="username">
-        {(field) => {
-          const schema = createUserFormSchema.shape.username;
-          return <field.TextInput {...{ useFieldContext, schema }} />;
-        }}
+        {(field) => (
+          <field.TextInput schema={createUserFormSchema.shape.username} />
+        )}
       </form.AppField>
 
       <form.Subscribe selector={(state) => [state.canSubmit]}>
         {([canSubmit]) => (
           <Button disabled={canSubmit === false} type="submit">
             <Save />
-            Guardar
+            Save
           </Button>
         )}
       </form.Subscribe>

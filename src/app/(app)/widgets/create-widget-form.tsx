@@ -3,10 +3,9 @@
 import type { AnyFieldApi, AnyFormApi } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Form } from "@/components/form";
+import { Form, useAppForm } from "@/components/form";
+import { FieldInfo } from "@/components/form/field-info";
 import { FormFooter } from "@/components/form/form-footer";
-import { FieldInfo } from "@/components/form/primitives/field-info";
-import { useAppForm } from "@/components/form/use-app-form";
 import { getFormDefaults } from "@/lib/form-defaults";
 import { getEnumOptions } from "@/lib/form-enum-options";
 import { orpc } from "@/lib/orpc";

@@ -1,17 +1,15 @@
-import type { AnyFieldApi } from "@tanstack/react-form";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatPhoneNumber } from "@/lib/number";
 import { deleteNonDigits } from "@/validation/utils";
+import { useFieldContext } from "..";
 
 export function PhoneNumberInput({
   schema,
-  useFieldContext,
 }: {
   schema?: ZodType<unknown, unknown>;
-  useFieldContext: <_TData>() => AnyFieldApi;
 }) {
   const field = useFieldContext<string>();
   return (

@@ -1,20 +1,18 @@
 "use client";
 
-import type { AnyFieldApi } from "@tanstack/react-form";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useFieldContext } from ".";
 
 export function ChoiceInput({
   schema,
-  useFieldContext,
   items,
   mode = "multiple",
 }: {
   schema?: ZodType<unknown, unknown>;
-  useFieldContext: <_TData>() => AnyFieldApi;
   items: [string, string][];
   mode?: "single" | "multiple";
 }) {

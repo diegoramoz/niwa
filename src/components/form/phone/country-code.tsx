@@ -1,6 +1,5 @@
-import type { AnyFieldApi } from "@tanstack/react-form";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -14,13 +13,12 @@ import {
   phoneCountryCodes,
   phoneCountryCodesMapping,
 } from "@/validation/enums/phone";
+import { useFieldContext } from "..";
 
 export function CountryCodeInput({
   schema,
-  useFieldContext,
 }: {
   schema?: ZodType<unknown, unknown>;
-  useFieldContext: <_TData>() => AnyFieldApi;
 }) {
   const field = useFieldContext<string>();
   return (

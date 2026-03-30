@@ -1,6 +1,6 @@
 import type { AnyFieldApi } from "@tanstack/react-form";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 

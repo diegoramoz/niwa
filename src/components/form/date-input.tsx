@@ -1,10 +1,9 @@
-import type { AnyFieldApi } from "@tanstack/react-form";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import type { Matcher } from "react-day-picker";
 import { es } from "react-day-picker/locale";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
@@ -13,17 +12,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useFieldContext } from ".";
 
 export function DateInput({
   schema,
-  useFieldContext,
   modifiers,
 }: {
   schema?: ZodType<unknown, unknown>;
-  useFieldContext: <_TData>() => AnyFieldApi;
   modifiers?: Record<string, Matcher | Matcher[] | undefined> | undefined;
 }) {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<Date>();
 
   const value = field.state.value;
 

@@ -1,6 +1,5 @@
-import type { AnyFieldApi } from "@tanstack/react-form";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -10,15 +9,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formInputMetaSchema } from "@/lib/zod";
+import { useFieldContext } from ".";
 
 export function SelectInput({
   schema,
-  useFieldContext,
   items,
   placeholder,
 }: {
   schema?: ZodType<unknown, unknown>;
-  useFieldContext: <_TData>() => AnyFieldApi;
   items: [string, string][];
   placeholder?: string;
 }) {
@@ -43,7 +41,7 @@ export function SelectInput({
             field.handleBlur();
           }
         }}
-        onValueChange={(e) => field.handleChange(e)}
+        onValueChange={(e) => e && field.handleChange(e)}
         value={field.state.value}
       >
         <SelectTrigger>

@@ -1,11 +1,51 @@
-import type { FormEventHandler } from "react";
+import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import { ChoiceInput } from "./choice-input";
+import { CurrencyInput } from "./currency-input";
+import { DateInput } from "./date-input";
+import { DateRangeInput } from "./date-range-input";
+import { DecimalInput } from "./decimal-input";
+import { FieldInfo } from "./field-info";
+import { CountryCodeInput } from "./phone/country-code";
+import { PhoneNumberInput } from "./phone/phone-number";
+import { SelectInput } from "./select-input";
+import { SubscribeButton } from "./subscribe-button";
+import { TextInput } from "./text-input";
+import { TextInputRaw } from "./text-input-raw";
+import { TextAreaInput } from "./textarea-input";
+import { UsernameInput } from "./username-input";
+
+export const { fieldContext, useFieldContext, formContext, useFormContext } =
+  createFormHookContexts();
+
+export const { useAppForm, withForm } = createFormHook({
+  fieldComponents: {
+    ChoiceInput,
+    CountryCodeInput,
+    CurrencyInput,
+    DateInput,
+    DateRangeInput,
+    DecimalInput,
+    FieldInfo,
+    PhoneNumberInput,
+    SelectInput,
+    TextAreaInput,
+    TextInput,
+    TextInputRaw,
+    UsernameInput,
+  },
+  formComponents: {
+    SubscribeButton,
+  },
+  fieldContext,
+  formContext,
+});
 
 export function Form({
   children,
   onSubmit,
 }: {
   children: React.ReactNode;
-  onSubmit?: FormEventHandler<HTMLFormElement> | undefined;
+  onSubmit?: React.ChangeEventHandler<HTMLFormElement> | undefined;
 }) {
   return (
     <form className="mx-auto mb-12" onSubmit={onSubmit}>

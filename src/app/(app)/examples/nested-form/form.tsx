@@ -1,7 +1,7 @@
 "use client";
 
 import { formOptions } from "@tanstack/react-form";
-import { useAppForm, withForm } from "@/components/form/index2";
+import { useAppForm, withForm } from "@/components/form";
 import { createUserFormSchema } from "../input/form/schema";
 
 const formOpts = formOptions({
@@ -26,12 +26,16 @@ export const ChildForm = withForm({
         <p>{title}</p>
         <form.AppField name="username">
           {(field) => {
-            return <field.TextField label="Username" />;
+            return (
+              <field.TextInput schema={createUserFormSchema.shape.username} />
+            );
           }}
         </form.AppField>
         <form.AppField name="email">
           {(field) => {
-            return <field.TextField label="Email" />;
+            return (
+              <field.TextInput schema={createUserFormSchema.shape.email} />
+            );
           }}
         </form.AppField>
         <form.AppForm>

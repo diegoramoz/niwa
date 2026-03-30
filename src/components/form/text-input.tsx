@@ -1,27 +1,16 @@
-import type { AnyFieldApi } from "@tanstack/react-form";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import type { ZodType } from "zod/v4";
-import { FieldInfo } from "@/components/form/primitives/field-info";
+import { FieldInfo } from "@/components/form/field-info";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useFilteredInput } from "@/hooks/use-filtered-input";
 import { type CharSpec, getCleanTextUnicode } from "@/lib/allowed-chars";
 import { formInputMetaSchema } from "@/lib/zod";
+import { useFieldContext } from ".";
 
-const MAX_ROWS = 15;
-
-export function TextAreaInput({
-  schema,
-  useFieldContext,
-  rows = 5,
-}: {
-  rows?: number;
-  schema?: ZodType<unknown, unknown>;
-  useFieldContext: <_TData>() => AnyFieldApi;
-}) {
+export function TextInput({ schema }: { schema?: ZodType<unknown, unknown> }) {
   const field = useFieldContext<string>();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [dynamicRows, setDynamicRows] = useState(rows);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   let chars: CharSpec | undefined;
 
@@ -29,15 +18,8 @@ export function TextAreaInput({
     chars = formInputMetaSchema.parse(schema.meta()).chars;
   }
 
-  useEffect(() => {
-    const value = field.state.value ?? "";
-    const lineCount = value.split("\n").length;
-    const calculatedRows = Math.min(Math.max(lineCount, rows), MAX_ROWS);
-    setDynamicRows(calculatedRows);
-  }, [field.state.value, rows]);
-
   const handleChange = useFilteredInput({
-    ref: textareaRef,
+    ref: inputRef,
     filter: (value) => getCleanTextUnicode({ value, chars }),
     onChange: field.handleChange,
   });
@@ -45,13 +27,12 @@ export function TextAreaInput({
   return (
     <>
       <Label htmlFor={field.name} schema={schema} />
-      <Textarea
+      <Input
         id={field.name}
         name={field.name}
         onBlur={field.handleBlur}
         onChange={handleChange}
-        ref={textareaRef}
-        rows={dynamicRows}
+        ref={inputRef}
         schema={schema}
         value={field.state.value}
       />
