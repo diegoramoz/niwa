@@ -219,5 +219,5 @@ export const insertWidgetSchema = createInsertSchema(widget, {
     .min(2, "Must be at least 2 characters")
     .max(100, "Cannot exceed 100 characters"),
   category: enumField(widgetCategoryEnum.enumValues, { label: "Category" }),
-  amount: integerField({ label: "Amount" }),
+  amount: integerField({ label: "Amount", chars: { custom: ["numbers"] } }),
 }).strict();

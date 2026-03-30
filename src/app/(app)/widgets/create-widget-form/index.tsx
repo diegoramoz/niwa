@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Form, useAppForm } from "@/components/form";
 import { FormFooter } from "@/components/form/form-footer";
 import { orpc } from "@/lib/orpc";
+import type { WidgetCategory } from "@/server/db/schema";
 import { createWidgetSchema } from "./schema";
 
 const categoryItems: [string, string][] = [
@@ -29,7 +30,7 @@ export function CreateWidgetForm() {
       try {
         await orpc.widget.create({
           name: value.name,
-          category: value.category as "basic" | "advanced" | "premium",
+          category: value.category as WidgetCategory,
           amount: value.amount,
         });
         toast("Widget created!");
