@@ -19,18 +19,12 @@ export const DEFAULT_INPUTS: AmortizationInputValues = {
 };
 
 interface Props {
-  onCalculate: () => void;
   onChange: (values: AmortizationInputValues) => void;
   onClear: () => void;
   values: AmortizationInputValues;
 }
 
-export function AmortizationInputs({
-  values,
-  onChange,
-  onCalculate,
-  onClear,
-}: Props) {
+export function AmortizationInputs({ values, onChange, onClear }: Props) {
   function set(field: keyof AmortizationInputValues) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
       onChange({ ...values, [field]: e.target.value });
@@ -105,9 +99,6 @@ export function AmortizationInputs({
       </div>
 
       <div className="flex gap-3">
-        <Button className="flex-1" onClick={onCalculate} type="button">
-          Calculate
-        </Button>
         <Button onClick={onClear} type="button" variant="outline">
           Clear
         </Button>

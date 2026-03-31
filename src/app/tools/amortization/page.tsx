@@ -48,7 +48,7 @@ export default function AmortizationPage() {
     setInputs(loadInputs());
   }, []);
 
-  function handleCalculate() {
+  useEffect(() => {
     const loanAmount = Number.parseFloat(inputs.loanAmount);
     const termYears = Number.parseInt(inputs.termYears, 10);
     const termMonths = Number.parseInt(inputs.termMonths, 10);
@@ -63,6 +63,7 @@ export default function AmortizationPage() {
       termYears * 12 + termMonths <= 0 ||
       annualInterestRate < 0
     ) {
+      setResult(null);
       return;
     }
 
@@ -74,11 +75,10 @@ export default function AmortizationPage() {
     });
     setResult(computed);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(inputs));
-  }
+  }, [inputs]);
 
   function handleClear() {
     setInputs(DEFAULT_INPUTS);
-    setResult(null);
     // Intentionally does NOT clear localStorage per spec
   }
 
@@ -94,7 +94,6 @@ export default function AmortizationPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <AmortizationInputs
-            onCalculate={handleCalculate}
             onChange={setInputs}
             onClear={handleClear}
             values={inputs}
@@ -116,7 +115,7 @@ export default function AmortizationPage() {
             </>
           ) : (
             <div className="flex h-full items-center justify-center rounded-2xl border border-dashed p-8 text-center text-muted-foreground text-sm">
-              Enter your loan details and click Calculate.
+              Enter valid loan details to see your repayment schedule.
             </div>
           )}
         </div>
