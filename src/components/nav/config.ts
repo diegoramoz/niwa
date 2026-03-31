@@ -34,10 +34,10 @@ export const USER_NAV_ROUTES = [
     activePatterns: ["/dashboard"],
   },
   {
-    href: "/examples/choice-input",
-    name: "Choice Input",
+    href: "/forms",
+    name: "Forms",
     icon: LayoutGrid,
-    activePatterns: ["/examples/choice-input", "/examples/choice-input/*"],
+    activePatterns: ["/forms", "/forms/*"],
   },
   {
     href: "/profile",
