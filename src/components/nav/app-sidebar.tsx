@@ -4,6 +4,7 @@ import {
   FileText,
   FolderOpen,
   Gauge,
+  Home,
   LayoutList,
   type LucideIcon,
   MoreHorizontal,
@@ -61,6 +62,13 @@ export function AppSidebar() {
         </div>
 
         <nav className="flex flex-1 flex-col gap-1">
+          <Item className="hover:bg-muted" render={<Link href="/" />} size="sm">
+            <ItemMedia variant="icon">
+              <Home className="size-4 text-muted-foreground" />
+            </ItemMedia>
+            <span className="text-sm">Home</span>
+          </Item>
+          <ItemSeparator />
           {sections.map((section, i) => (
             <div key={section.title}>
               {i > 0 && <ItemSeparator />}

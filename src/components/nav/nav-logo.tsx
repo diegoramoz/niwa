@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { APP } from "@/lib/metadata";
 
 function NavLogo() {
@@ -15,9 +16,9 @@ function NavLogo() {
 
 export function NavLogoWithText() {
   return (
-    <div className="flex items-center gap-3">
+    <Link className="flex items-center gap-3" href="/">
       <NavLogo />
       <div className="font-semibold text-xl">{APP.displayName}</div>
-    </div>
+    </Link>
   );
 }
