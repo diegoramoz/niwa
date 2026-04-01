@@ -1,4 +1,5 @@
 import {
+  BlocksIcon,
   HomeIcon,
   LayoutGrid,
   type LucideIcon,
@@ -44,6 +45,12 @@ export const USER_NAV_ROUTES = [
     name: "Tools",
     icon: WrenchIcon,
     activePatterns: ["/tools", "/tools/*"],
+  },
+  {
+    href: "/primitives",
+    name: "Primitives",
+    icon: BlocksIcon,
+    activePatterns: ["/primitives", "/primitives/*"],
   },
 ] as const satisfies readonly NavRoute[];
 
