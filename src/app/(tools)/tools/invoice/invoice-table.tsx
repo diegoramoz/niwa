@@ -1,5 +1,6 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   flexRender,
@@ -58,28 +59,28 @@ function EditDialog({
   onSave: (nanoId: string, data: Partial<Invoice>) => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<Invoice>(invoice);
-  const [saving, setSaving] = useState(false);
 
-  function reset() {
-    setForm(invoice);
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    try {
-      await onSave(invoice.nanoId, form);
+  const form = useForm({
+    defaultValues: {
+      merchant: invoice.merchant,
+      date: invoice.date.slice(0, 10),
+      amount: invoice.amount,
+      currency: invoice.currency,
+      category: invoice.category,
+      description: invoice.description,
+      tax: invoice.tax,
+    },
+    onSubmit: async ({ value }) => {
+      await onSave(invoice.nanoId, value);
       setOpen(false);
-    } finally {
-      setSaving(false);
-    }
-  }
+    },
+  });
 
   return (
     <Dialog
       onOpenChange={(next) => {
         if (!next) {
-          reset();
+          form.reset();
         }
         setOpen(next);
       }}
@@ -92,105 +93,138 @@ function EditDialog({
         <DialogHeader>
           <DialogTitle>Edit Invoice</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-3 py-2">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-medium text-sm" htmlFor="merchant">
-                Merchant
-              </label>
-              <Input
-                id="merchant"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, merchant: e.target.value }))
-                }
-                value={form.merchant}
-              />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <div className="grid gap-3 py-2">
+            <div className="grid grid-cols-2 gap-3">
+              <form.Field name="merchant">
+                {(field) => (
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="merchant">
+                      Merchant
+                    </label>
+                    <Input
+                      id="merchant"
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="date">
+                {(field) => (
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="date">
+                      Date
+                    </label>
+                    <Input
+                      id="date"
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="date"
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.Field>
             </div>
-            <div className="space-y-1">
-              <label className="font-medium text-sm" htmlFor="date">
-                Date
-              </label>
-              <Input
-                id="date"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, date: e.target.value }))
-                }
-                type="date"
-                value={form.date.slice(0, 10)}
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <form.Field name="amount">
+                {(field) => (
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="amount">
+                      Amount
+                    </label>
+                    <Input
+                      id="amount"
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="currency">
+                {(field) => (
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="currency">
+                      Currency
+                    </label>
+                    <Input
+                      id="currency"
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.Field>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <form.Field name="tax">
+                {(field) => (
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="tax">
+                      Tax
+                    </label>
+                    <Input
+                      id="tax"
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="category">
+                {(field) => (
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="category">
+                      Category
+                    </label>
+                    <Input
+                      id="category"
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </div>
+            <form.Field name="description">
+              {(field) => (
+                <div className="space-y-1">
+                  <label className="font-medium text-sm" htmlFor="description">
+                    Description
+                  </label>
+                  <Textarea
+                    id="description"
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    rows={2}
+                    value={field.state.value}
+                  />
+                </div>
+              )}
+            </form.Field>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-medium text-sm" htmlFor="amount">
-                Amount
-              </label>
-              <Input
-                id="amount"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, amount: e.target.value }))
-                }
-                value={form.amount}
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="font-medium text-sm" htmlFor="currency">
-                Currency
-              </label>
-              <Input
-                id="currency"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, currency: e.target.value }))
-                }
-                value={form.currency}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-medium text-sm" htmlFor="tax">
-                Tax
-              </label>
-              <Input
-                id="tax"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, tax: e.target.value }))
-                }
-                value={form.tax}
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="font-medium text-sm" htmlFor="category">
-                Category
-              </label>
-              <Input
-                id="category"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, category: e.target.value }))
-                }
-                value={form.category}
-              />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <label className="font-medium text-sm" htmlFor="description">
-              Description
-            </label>
-            <Textarea
-              id="description"
-              onChange={(e) =>
-                setForm((f) => ({ ...f, description: e.target.value }))
-              }
-              rows={2}
-              value={form.description}
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button disabled={saving} onClick={handleSave} type="button">
-            {saving ? "Saving…" : "Save"}
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <form.Subscribe selector={(s) => s.isSubmitting}>
+              {(isSubmitting) => (
+                <Button disabled={isSubmitting} type="submit">
+                  {isSubmitting ? "Saving…" : "Save"}
+                </Button>
+              )}
+            </form.Subscribe>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

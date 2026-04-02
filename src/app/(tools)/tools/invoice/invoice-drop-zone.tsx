@@ -1,5 +1,6 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { orpc } from "@/lib/orpc";
-import { type ExtractedInvoice, extractInvoice } from "./extract-invoice";
 
 const ACCEPTED_EXTENSIONS = ".pdf,.jpg,.jpeg,.png,.webp";
 const ACCEPTED_MIME_TYPES = [
@@ -23,17 +23,194 @@ const ACCEPTED_MIME_TYPES = [
   "image/webp",
 ];
 
-interface ReviewForm extends ExtractedInvoice {}
+type ExtractedValues = {
+  merchant: string;
+  date: string;
+  amount: string;
+  currency: string;
+  category: string;
+  description: string;
+  tax: string;
+};
 
 interface InvoiceDropZoneProps {
   onCreated: () => Promise<void>;
 }
 
+function ReviewDialogContent({
+  defaultValues,
+  onCreated,
+  onClose,
+}: {
+  defaultValues: ExtractedValues;
+  onCreated: () => Promise<void>;
+  onClose: () => void;
+}) {
+  const form = useForm({
+    defaultValues,
+    onSubmit: async ({ value }) => {
+      try {
+        await orpc.invoice.create({
+          merchant: value.merchant,
+          date: new Date(value.date),
+          amount: value.amount,
+          currency: value.currency,
+          category: value.category,
+          description: value.description,
+          tax: value.tax,
+        });
+        toast.success("Invoice saved");
+        onClose();
+        await onCreated();
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to save invoice"
+        );
+        throw err;
+      }
+    },
+  });
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+    >
+      <div className="grid gap-3 py-2">
+        <div className="grid grid-cols-2 gap-3">
+          <form.Field name="merchant">
+            {(field) => (
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="rv-merchant">
+                  Merchant
+                </label>
+                <Input
+                  id="rv-merchant"
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  value={field.state.value}
+                />
+              </div>
+            )}
+          </form.Field>
+          <form.Field name="date">
+            {(field) => (
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="rv-date">
+                  Date
+                </label>
+                <Input
+                  id="rv-date"
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  type="date"
+                  value={field.state.value.slice(0, 10)}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <form.Field name="amount">
+            {(field) => (
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="rv-amount">
+                  Amount
+                </label>
+                <Input
+                  id="rv-amount"
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  value={field.state.value}
+                />
+              </div>
+            )}
+          </form.Field>
+          <form.Field name="currency">
+            {(field) => (
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="rv-currency">
+                  Currency
+                </label>
+                <Input
+                  id="rv-currency"
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  value={field.state.value}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <form.Field name="tax">
+            {(field) => (
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="rv-tax">
+                  Tax
+                </label>
+                <Input
+                  id="rv-tax"
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  value={field.state.value}
+                />
+              </div>
+            )}
+          </form.Field>
+          <form.Field name="category">
+            {(field) => (
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="rv-category">
+                  Category
+                </label>
+                <Input
+                  id="rv-category"
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  value={field.state.value}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
+        <form.Field name="description">
+          {(field) => (
+            <div className="space-y-1">
+              <label className="font-medium text-sm" htmlFor="rv-description">
+                Description
+              </label>
+              <Textarea
+                id="rv-description"
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                rows={2}
+                value={field.state.value}
+              />
+            </div>
+          )}
+        </form.Field>
+      </div>
+      <DialogFooter>
+        <form.Subscribe selector={(s) => s.isSubmitting}>
+          {(isSubmitting) => (
+            <Button disabled={isSubmitting} type="submit">
+              {isSubmitting ? "Saving…" : "Save Invoice"}
+            </Button>
+          )}
+        </form.Subscribe>
+      </DialogFooter>
+    </form>
+  );
+}
+
 export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
   const [dragging, setDragging] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [review, setReview] = useState<ReviewForm | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [review, setReview] = useState<ExtractedValues | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function processFile(file: File) {
@@ -41,12 +218,24 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
       toast.error("Unsupported file type. Accepted: PDF, JPG, PNG, WEBP.");
       return;
     }
-
     setProcessing(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const extracted = await extractInvoice(formData);
+      const arrayBuffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = "";
+      for (let i = 0; i < bytes.byteLength; i++) {
+        const tt = bytes[i];
+        if (tt === undefined) {
+          toast.error("Failed to read file bytes");
+        } else {
+          binary += String.fromCharCode(tt);
+        }
+      }
+      const fileBase64 = btoa(binary);
+      const extracted = await orpc.invoice.extract({
+        fileBase64,
+        mimeType: file.type,
+      });
       setReview(extracted);
     } catch (err) {
       toast.error(
@@ -82,33 +271,6 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
     }
     // Reset so the same file can be dropped again
     e.target.value = "";
-  }
-
-  async function handleSave() {
-    if (!review) {
-      return;
-    }
-    setSaving(true);
-    try {
-      await orpc.invoice.create({
-        merchant: review.merchant,
-        date: new Date(review.date),
-        amount: review.amount,
-        currency: review.currency,
-        category: review.category,
-        description: review.description,
-        tax: review.tax,
-      });
-      toast.success("Invoice saved");
-      setReview(null);
-      await onCreated();
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to save invoice"
-      );
-    } finally {
-      setSaving(false);
-    }
   }
 
   return (
@@ -165,116 +327,13 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
             <DialogTitle>Review Extracted Invoice</DialogTitle>
           </DialogHeader>
           {review && (
-            <div className="grid gap-3 py-2">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="font-medium text-sm" htmlFor="rv-merchant">
-                    Merchant
-                  </label>
-                  <Input
-                    id="rv-merchant"
-                    onChange={(e) =>
-                      setReview((r) =>
-                        r ? { ...r, merchant: e.target.value } : r
-                      )
-                    }
-                    value={review.merchant}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="font-medium text-sm" htmlFor="rv-date">
-                    Date
-                  </label>
-                  <Input
-                    id="rv-date"
-                    onChange={(e) =>
-                      setReview((r) => (r ? { ...r, date: e.target.value } : r))
-                    }
-                    type="date"
-                    value={review.date.slice(0, 10)}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="font-medium text-sm" htmlFor="rv-amount">
-                    Amount
-                  </label>
-                  <Input
-                    id="rv-amount"
-                    onChange={(e) =>
-                      setReview((r) =>
-                        r ? { ...r, amount: e.target.value } : r
-                      )
-                    }
-                    value={review.amount}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="font-medium text-sm" htmlFor="rv-currency">
-                    Currency
-                  </label>
-                  <Input
-                    id="rv-currency"
-                    onChange={(e) =>
-                      setReview((r) =>
-                        r ? { ...r, currency: e.target.value } : r
-                      )
-                    }
-                    value={review.currency}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="font-medium text-sm" htmlFor="rv-tax">
-                    Tax
-                  </label>
-                  <Input
-                    id="rv-tax"
-                    onChange={(e) =>
-                      setReview((r) => (r ? { ...r, tax: e.target.value } : r))
-                    }
-                    value={review.tax}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="font-medium text-sm" htmlFor="rv-category">
-                    Category
-                  </label>
-                  <Input
-                    id="rv-category"
-                    onChange={(e) =>
-                      setReview((r) =>
-                        r ? { ...r, category: e.target.value } : r
-                      )
-                    }
-                    value={review.category}
-                  />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="font-medium text-sm" htmlFor="rv-description">
-                  Description
-                </label>
-                <Textarea
-                  id="rv-description"
-                  onChange={(e) =>
-                    setReview((r) =>
-                      r ? { ...r, description: e.target.value } : r
-                    )
-                  }
-                  rows={2}
-                  value={review.description}
-                />
-              </div>
-            </div>
+            <ReviewDialogContent
+              defaultValues={review}
+              key={JSON.stringify(review)}
+              onClose={() => setReview(null)}
+              onCreated={onCreated}
+            />
           )}
-          <DialogFooter>
-            <Button disabled={saving} onClick={handleSave} type="button">
-              {saving ? "Saving…" : "Save Invoice"}
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

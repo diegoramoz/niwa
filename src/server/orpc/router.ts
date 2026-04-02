@@ -18,6 +18,7 @@ import {
   user as userTable,
   widget as widgetTable,
 } from "@/server/db/schema";
+import { extractInvoiceFromOllama } from "@/server/ollama";
 
 const widgetRouter = {
   create: os.input(insertWidgetSchema).handler(async ({ input }) => {
@@ -209,7 +210,35 @@ const creditCardRouter = {
     }),
 };
 
+const INVOICE_ACCEPTED_MIME_TYPES = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+
 const invoiceRouter = {
+  extract: os
+    .input(z.object({ fileBase64: z.string(), mimeType: z.string() }))
+    .handler(async ({ input }) => {
+      if (!INVOICE_ACCEPTED_MIME_TYPES.includes(input.mimeType)) {
+        throw new Error(
+          `Unsupported file type "${input.mimeType}". Accepted: PDF, JPG, PNG, WEBP.`
+        );
+      }
+      const buffer = Buffer.from(input.fileBase64, "base64");
+      const extracted = await extractInvoiceFromOllama(buffer, input.mimeType);
+      return {
+        merchant: extracted.merchant,
+        date: extracted.date || new Date().toISOString().slice(0, 10),
+        amount: extracted.amount || "0.00",
+        currency: extracted.currency || "USD",
+        category: extracted.category,
+        description: extracted.description,
+        tax: extracted.tax || "0.00",
+      };
+    }),
+
   create: os
     .input(
       insertInvoiceSchema.omit({
