@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { type Invoice, InvoiceTable } from "@/app/invoice-table";
 import { orpc } from "@/utils/orpc";
 import { InvoiceDropZone } from "./invoice-drop-zone";
-import { type Invoice, InvoiceTable } from "./invoice-table";
 
 export function InvoiceSection() {
 	const [invoices, setInvoices] = useState<Invoice[]>([]);

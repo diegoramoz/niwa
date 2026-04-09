@@ -3,13 +3,13 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { APP } from "@oss/shared/metadata";
 import { Item, ItemGroup, ItemMedia } from "@oss/ui/components/item";
-import { isRouteActive } from "@oss/ui/components/nav/config";
 import {
 	WireframeSidebar,
 	WireframeSidebarContent,
 	WireframeSidebarFooter,
 	WireframeSidebarHeader,
 } from "@oss/ui/components/wireframe";
+import { isRouteActive } from "@oss/ui/hooks/use-nav-routes";
 import { cn } from "@oss/ui/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";

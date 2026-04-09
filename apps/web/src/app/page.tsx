@@ -1,8 +1,8 @@
 "use client";
 
 import { APP } from "@oss/shared/metadata";
-import { UserNavigation } from "@oss/ui/components/nav/navigation";
 import { Wireframe } from "@oss/ui/components/wireframe";
+import { UserNavigation } from "@/components/navigation";
 
 export default function Home() {
 	return (

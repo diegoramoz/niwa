@@ -1,5 +1,4 @@
 import { FormsSidebar } from "@oss/ui/components/nav/forms-sidebar";
-import { FormsNav } from "@oss/ui/components/nav/section-nav";
 import { Wireframe } from "@oss/ui/components/wireframe";
 
 export default function FormsLayout({
@@ -10,7 +9,6 @@ export default function FormsLayout({
 	return (
 		<Wireframe>
 			<FormsSidebar />
-			<FormsNav />
 			{children}
 		</Wireframe>
 	);

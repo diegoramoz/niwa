@@ -3,18 +3,7 @@
 import { NavLogoWithText } from "@oss/ui/components/nav/nav-logo";
 import { cn } from "@oss/ui/lib/utils";
 
-export type MobileTopNavProps = {
-	/** Optional brand name */
-	brandName?: string;
-	/** Optional className for customization */
-	className?: string;
-};
-
-/**
- * Mobile top navigation component
- * Displays only the logo and brand name on top left
- */
-export function MobileTopNav({ className }: MobileTopNavProps) {
+export function MobileTopNav() {
 	return (
 		<div
 			className={cn(
@@ -22,8 +11,7 @@ export function MobileTopNav({ className }: MobileTopNavProps) {
 				"bg-background/95 backdrop-blur-md",
 				"border-border/40 border-b",
 				"px-4",
-				"shadow-sm",
-				className
+				"shadow-sm"
 			)}
 		>
 			<NavLogoWithText />

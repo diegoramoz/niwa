@@ -1,5 +1,4 @@
 import { PrimitivesSidebar } from "@oss/ui/components/nav/primitives-sidebar";
-import { PrimitivesNav } from "@oss/ui/components/nav/section-nav";
 import { Wireframe } from "@oss/ui/components/wireframe";
 
 export default function PrimitivesLayout({
@@ -16,7 +15,6 @@ export default function PrimitivesLayout({
 			}}
 		>
 			<PrimitivesSidebar />
-			<PrimitivesNav />
 			{children}
 		</Wireframe>
 	);
