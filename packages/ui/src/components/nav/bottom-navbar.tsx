@@ -1,7 +1,7 @@
 "use client";
 
 import { SiInstagram, SiX, SiYoutube } from "@icons-pack/react-simple-icons";
-import { APP } from "@oss/shared/metadata";
+import { WEB_METADATA } from "@oss/shared/metadata/web";
 import Link from "next/link";
 
 const socialMediaLinks = [
@@ -46,7 +46,7 @@ export function BottomNavbar() {
 			<div className="container flex h-full w-full items-start justify-between gap-8 px-6 py-12 md:px-8">
 				<div className="flex flex-col gap-4">
 					<div className="font-bold text-xl tracking-tight">
-						{APP.displayName}
+						{WEB_METADATA.displayName}
 					</div>
 					<div className="flex gap-3">
 						{socialMediaLinks.map(({ href, name, icon }) => (
@@ -81,7 +81,8 @@ export function BottomNavbar() {
 			<div className="border-border/40 border-t">
 				<div className="container px-6 py-6 md:px-8">
 					<p className="text-center text-muted-foreground text-sm">
-						© {new Date().getFullYear()} {APP.displayName}. All rights reserved.
+						© {new Date().getFullYear()} {WEB_METADATA.displayName}. All rights
+						reserved.
 					</p>
 				</div>
 			</div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { APP } from "@oss/shared/metadata";
+import { WEB_METADATA } from "@oss/shared/metadata/web";
 import { Wireframe } from "@oss/ui/components/wireframe";
 import { UserNavigation } from "@/components/navigation";
 
@@ -16,11 +16,11 @@ export default function Home() {
 					</p>
 					<a
 						className="text-muted-foreground text-sm underline underline-offset-4 transition-colors hover:text-foreground"
-						href={APP.github.url}
+						href={WEB_METADATA.github.url}
 						rel="noreferrer"
 						target="_blank"
 					>
-						{APP.github.repo}
+						{WEB_METADATA.github.repo}
 					</a>
 				</div>
 

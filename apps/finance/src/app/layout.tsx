@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/utils/orpc.server";
 import "@/index.css";
+import { Wireframe } from "@oss/ui/components/wireframe";
 import { cn } from "@oss/ui/lib/utils";
+import { Navbar } from "@/components/navigation";
 import Providers from "@/providers";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -34,7 +36,12 @@ export default function RootLayout({
 			suppressHydrationWarning
 		>
 			<body className="overscroll-none">
-				<Providers>{children}</Providers>
+				<Providers>
+					<Wireframe>
+						<Navbar />
+						{children}
+					</Wireframe>
+				</Providers>
 			</body>
 		</html>
 	);

@@ -1,13 +1,13 @@
 "use client";
 
-import { APP } from "@oss/shared/metadata";
+import { WEB_METADATA } from "@oss/shared/metadata/web";
 import { Sidebar } from "@oss/ui/components/nav/sidebar";
 import { PRIMITIVES_NAV } from "@/config/primitives";
 
 export function PrimitivesSidebar() {
 	return (
 		<Sidebar
-			github={APP.github.url}
+			github={WEB_METADATA.github.url}
 			routes={PRIMITIVES_NAV}
 			shortDesc="Primitives"
 			title="Forms"

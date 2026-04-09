@@ -1,4 +1,4 @@
-export const APP = {
+export const WEB_METADATA = {
 	displayName: "My App",
 	github: {
 		repo: "zdiegoramos/oss",

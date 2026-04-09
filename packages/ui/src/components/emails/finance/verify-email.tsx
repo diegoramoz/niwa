@@ -1,5 +1,5 @@
-import { APP } from "@oss/shared/metadata";
-import { Logo } from "@oss/ui/components/emails/logo";
+import { FINANCE_METADATA } from "@oss/shared/metadata/finance";
+import { Logo } from "@oss/ui/components/emails/finance/logo";
 import {
 	Body,
 	Container,
@@ -21,7 +21,9 @@ export function VerifyEmail({ verificationUrl }: VerifyEmailProps) {
 	return (
 		<Html>
 			<Head />
-			<Preview>Verify your email address for {APP.displayName}</Preview>
+			<Preview>
+				Verify your email address for {FINANCE_METADATA.displayName}
+			</Preview>
 			<Tailwind>
 				<Body className="bg-white px-1 pt-4 font-sans text-black">
 					<Container className="mx-auto max-w-150">
@@ -30,7 +32,7 @@ export function VerifyEmail({ verificationUrl }: VerifyEmailProps) {
 							Verify your email address
 						</Heading>
 						<Text className="mb-4 leading-6">
-							Thanks for signing up for {APP.displayName}!
+							Thanks for signing up for {FINANCE_METADATA.displayName}!
 						</Text>
 						<Text className="mb-6 leading-6">
 							Click the link below to complete the verification process and
@@ -44,8 +46,8 @@ export function VerifyEmail({ verificationUrl }: VerifyEmailProps) {
 						</Link>
 						<Hr className="mb-4 border-neutral-200 border-t" />
 						<Text className="text-neutral-700 leading-6">
-							If you didn't create an account at {APP.displayName}, you can
-							safely ignore this message.
+							If you didn't create an account at {FINANCE_METADATA.displayName},
+							you can safely ignore this message.
 						</Text>
 					</Container>
 				</Body>

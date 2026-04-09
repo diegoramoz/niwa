@@ -1,5 +1,5 @@
-import { APP } from "@oss/shared/metadata";
-import { Logo } from "@oss/ui/components/emails/logo";
+import { FINANCE_METADATA } from "@oss/shared/metadata/finance";
+import { Logo } from "@oss/ui/components/emails/finance/logo";
 import {
 	Body,
 	Container,
@@ -21,7 +21,7 @@ export function ResetPassword({ resetUrl }: ResetPasswordProps) {
 	return (
 		<Html>
 			<Head />
-			<Preview>Reset your {APP.displayName} password</Preview>
+			<Preview>Reset your {FINANCE_METADATA.displayName} password</Preview>
 			<Tailwind>
 				<Body className="bg-white px-1 pt-4 font-sans text-2xl text-black">
 					<Container className="mx-auto max-w-150">
@@ -29,7 +29,7 @@ export function ResetPassword({ resetUrl }: ResetPasswordProps) {
 						<Heading className="mb-5 text-2xl">Reset your password</Heading>
 						<Text className="mb-4 leading-6">
 							We received a request to reset the password for your
-							{APP.displayName} account.
+							{FINANCE_METADATA.displayName} account.
 						</Text>
 						<Text className="mb-6 leading-6">
 							If you requested a password reset, click the link below:
