@@ -1,4 +1,7 @@
 #!/bin/sh
+
+sh scripts/check-env-files.sh
+
 bun x lint-staged
 bun ts
 bun test
