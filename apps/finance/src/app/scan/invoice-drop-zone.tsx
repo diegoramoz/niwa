@@ -34,16 +34,16 @@ type ExtractedValues = {
 };
 
 type InvoiceDropZoneProps = {
-	onCreated: () => Promise<void>;
+	onCreatedAction: () => Promise<void>;
 };
 
 function ReviewDialogContent({
 	defaultValues,
-	onCreated,
+	onCreatedAction,
 	onClose,
 }: {
 	defaultValues: ExtractedValues;
-	onCreated: () => Promise<void>;
+	onCreatedAction: () => Promise<void>;
 	onClose: () => void;
 }) {
 	const form = useForm({
@@ -61,7 +61,7 @@ function ReviewDialogContent({
 				});
 				toast.success("Invoice saved");
 				onClose();
-				await onCreated();
+				await onCreatedAction();
 			} catch (err) {
 				toast.error(
 					err instanceof Error ? err.message : "Failed to save invoice"
@@ -207,7 +207,7 @@ function ReviewDialogContent({
 	);
 }
 
-export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
+export function InvoiceDropZone({ onCreatedAction }: InvoiceDropZoneProps) {
 	const [dragging, setDragging] = useState(false);
 	const [processing, setProcessing] = useState(false);
 	const [review, setReview] = useState<ExtractedValues | null>(null);
@@ -221,17 +221,11 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
 		setProcessing(true);
 		try {
 			const arrayBuffer = await file.arrayBuffer();
-			const bytes = new Uint8Array(arrayBuffer);
-			let binary = "";
-			for (let i = 0; i < bytes.byteLength; i++) {
-				const tt = bytes[i];
-				if (tt === undefined) {
-					toast.error("Failed to read file bytes");
-				} else {
-					binary += String.fromCharCode(tt);
-				}
-			}
-			const fileBase64 = btoa(binary);
+			const fileBase64 = btoa(
+				Array.from(new Uint8Array(arrayBuffer), (b) =>
+					String.fromCharCode(b)
+				).join("")
+			);
 			const extracted = await orpc.invoice.extract({
 				fileBase64,
 				mimeType: file.type,
@@ -275,17 +269,18 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
 
 	return (
 		<>
-			{/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: drop zone requires drag events on container */}
-			{/* biome-ignore lint/a11y/noStaticElementInteractions: drop zone requires drag events on container */}
-			<section
-				className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 transition-colors ${
+			<button
+				aria-label="Invoice drop zone"
+				className={`flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 transition-colors ${
 					dragging
 						? "border-primary bg-primary/5"
 						: "border-muted-foreground/30 bg-muted/20"
 				}`}
+				onClick={() => fileInputRef.current?.click()}
 				onDragLeave={handleDragLeave}
 				onDragOver={handleDragOver}
 				onDrop={handleDrop}
+				type="button"
 			>
 				{processing ? (
 					<p className="text-muted-foreground text-sm">Processing file…</p>
@@ -295,14 +290,9 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
 							Drag and drop a PDF or image here
 						</p>
 						<span className="text-muted-foreground text-xs">or</span>
-						<Button
-							onClick={() => fileInputRef.current?.click()}
-							size="sm"
-							type="button"
-							variant="outline"
-						>
+						<span className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-3 font-medium text-sm shadow-sm transition-colors">
 							Choose file
-						</Button>
+						</span>
 					</>
 				)}
 				<input
@@ -312,7 +302,7 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
 					ref={fileInputRef}
 					type="file"
 				/>
-			</section>
+			</button>
 
 			<Dialog
 				onOpenChange={(open) => {
@@ -331,7 +321,7 @@ export function InvoiceDropZone({ onCreated }: InvoiceDropZoneProps) {
 							defaultValues={review}
 							key={JSON.stringify(review)}
 							onClose={() => setReview(null)}
-							onCreated={onCreated}
+							onCreatedAction={onCreatedAction}
 						/>
 					)}
 				</DialogContent>

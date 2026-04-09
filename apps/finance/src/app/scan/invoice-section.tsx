@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { type Invoice, InvoiceTable } from "@/app/invoice-table";
+import { type Invoice, InvoiceTable } from "@/app/scan/invoice-table";
 import { orpc } from "@/utils/orpc";
 import { InvoiceDropZone } from "./invoice-drop-zone";
 
@@ -78,7 +78,7 @@ export function InvoiceSection() {
 
 	return (
 		<div className="space-y-6">
-			<InvoiceDropZone onCreated={fetchInvoices} />
+			<InvoiceDropZone onCreatedAction={fetchInvoices} />
 
 			<section>
 				<h2 className="mb-3 font-semibold text-lg">Recorded Invoices</h2>

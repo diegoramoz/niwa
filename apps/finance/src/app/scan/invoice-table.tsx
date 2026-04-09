@@ -38,7 +38,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export type Invoice = {
 	nanoId: string;
@@ -299,7 +299,10 @@ export function InvoiceTable({
 	onEdit,
 	onDelete,
 }: InvoiceTableProps) {
-	const columns = makeColumns(onEdit, onDelete);
+	const columns = useMemo(
+		() => makeColumns(onEdit, onDelete),
+		[onEdit, onDelete]
+	);
 
 	const table = useReactTable({
 		data: invoices,
