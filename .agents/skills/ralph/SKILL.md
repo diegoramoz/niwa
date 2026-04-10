@@ -58,6 +58,9 @@ Pick the highest-priority open `afk` issue not blocked by another open issue:
    - Prefix: `RALPH:`
    - Include issue ID (e.g. `ISSUE-001`) and PRD ref (e.g. `PRD-{ARG}`)
    - List key decisions, files changed, blockers for next iteration
+7. **Context guard** — immediately after finishing an issue, check context usage:
+   - If used context is **more than 40%** of the available window, run `/clear` before doing any additional work.
+   - After clearing, resume by re-reading `PRD.md`, `PLAN.md`, and the most recent issue file before continuing.
 
 ## Rules
 
@@ -65,6 +68,7 @@ Pick the highest-priority open `afk` issue not blocked by another open issue:
 - Do not close an issue until tests pass — update the issue file and commit it all together
 - No commented-out code or TODO comments in committed code
 - If blocked (missing context, unfixable tests, external dependency): append `## Blocked` to the issue file explaining why, then stop
+- Never continue to another issue when context usage is above 40% until `/clear` has been run and core PRD context has been reloaded
 
 ## Done
 

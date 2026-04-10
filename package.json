@@ -47,7 +47,8 @@
     "lint": "biome check --write .",
     "check": "ultracite check",
     "fix": "ultracite fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "box": "bun .sandcastle/main.ts"
   },
   "dependencies": {
     "@oss/env": "workspace:*",
@@ -55,6 +56,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@ai-hero/sandcastle": "^0.2.3",
     "@biomejs/biome": "2.4.10",
     "@oss/config": "workspace:*",
     "@types/node": "^22.13.14",
