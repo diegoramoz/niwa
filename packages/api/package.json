@@ -18,6 +18,7 @@
     "@oss/auth": "workspace:*",
     "@oss/db": "workspace:*",
     "@oss/env": "workspace:*",
+    "@oss/llm": "workspace:*",
     "dotenv": "catalog:",
     "next": "catalog:",
     "zod": "catalog:"

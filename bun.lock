@@ -157,6 +157,7 @@
         "@oss/auth": "workspace:*",
         "@oss/db": "workspace:*",
         "@oss/env": "workspace:*",
+        "@oss/llm": "workspace:*",
         "dotenv": "catalog:",
         "next": "catalog:",
         "zod": "catalog:",
@@ -220,6 +221,18 @@
       "devDependencies": {
         "@oss/config": "workspace:*",
         "@types/node": "^22.13.14",
+        "typescript": "^5",
+      },
+    },
+    "packages/llm": {
+      "name": "@oss/llm",
+      "version": "0.0.0",
+      "dependencies": {
+        "dotenv": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@oss/config": "workspace:*",
         "typescript": "^5",
       },
     },
@@ -894,6 +907,8 @@
     "@oss/db": ["@oss/db@workspace:packages/db"],
 
     "@oss/env": ["@oss/env@workspace:packages/env"],
+
+    "@oss/llm": ["@oss/llm@workspace:packages/llm"],
 
     "@oss/shared": ["@oss/shared@workspace:packages/shared"],
 

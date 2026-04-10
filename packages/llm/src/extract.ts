@@ -1,4 +1,4 @@
-import "server-only";
+import { loadConfig } from "./config";
 
 export type OllamaExtraction = {
 	merchant: string;
@@ -10,10 +10,8 @@ export type OllamaExtraction = {
 	tax: string;
 };
 
-const OLLAMA_URL = "http://localhost:11434/api/generate";
 const RE_CODE_FENCE_START = /^```(?:json)?\s*/i;
 const RE_CODE_FENCE_END = /\s*```\s*$/;
-const OLLAMA_MODEL = "llama3.2-vision";
 
 const EXTRACTION_PROMPT = `You are an invoice data extractor. Analyze this invoice or receipt image and extract the following fields. Return ONLY valid JSON matching this schema exactly:
 {
@@ -45,7 +43,6 @@ function safeParseExtraction(raw: string): OllamaExtraction {
 	};
 
 	try {
-		// Strip markdown code fences if the model wraps the response
 		const cleaned = raw
 			.replace(RE_CODE_FENCE_START, "")
 			.replace(RE_CODE_FENCE_END, "")
@@ -69,17 +66,19 @@ function safeParseExtraction(raw: string): OllamaExtraction {
 }
 
 /**
- * Send an image buffer to the locally running Ollama llama3.2-vision model
+ * Send an image buffer to the locally running Ollama vision model
  * and extract structured invoice fields.
  *
  * @param buffer - Raw file bytes (must be an image: JPEG, PNG, or WEBP)
  * @param mimeType - MIME type of the file
+ * @param headers - Optional HTTP headers to include in the request (e.g. Cloudflare Access tokens)
  * @throws {Error} if the file is a PDF (PDF-to-image conversion requires additional setup)
  * @throws {Error} if Ollama is unreachable
  */
 export async function extractInvoiceFromOllama(
 	buffer: Buffer,
-	mimeType: string
+	mimeType: string,
+	headers?: Record<string, string>
 ): Promise<OllamaExtraction> {
 	if (mimeType === "application/pdf") {
 		throw new Error(
@@ -88,15 +87,21 @@ export async function extractInvoiceFromOllama(
 		);
 	}
 
+	const config = loadConfig();
+	const url = `${config.OLLAMA_URL}/api/generate`;
+	const model = config.OLLAMA_MODEL;
 	const base64 = buffer.toString("base64");
 
 	let res: Response;
 	try {
-		res = await fetch(OLLAMA_URL, {
+		res = await fetch(url, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				...headers,
+			},
 			body: JSON.stringify({
-				model: OLLAMA_MODEL,
+				model,
 				prompt: EXTRACTION_PROMPT,
 				images: [base64],
 				stream: false,
@@ -108,7 +113,7 @@ export async function extractInvoiceFromOllama(
 		if (message.includes("ECONNREFUSED") || message.includes("fetch failed")) {
 			throw new Error(
 				"Ollama is not running. Start it with `ollama serve` and make sure " +
-					"`llama3.2-vision` is pulled (`ollama pull llama3.2-vision`)."
+					`\`${model}\` is pulled (\`ollama pull ${model}\`).`
 			);
 		}
 		throw new Error(`Failed to reach Ollama: ${message}`);

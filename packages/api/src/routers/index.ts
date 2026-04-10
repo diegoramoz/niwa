@@ -1,5 +1,4 @@
 import type { RouterClient } from "@orpc/server";
-import { extractInvoiceFromOllama } from "@oss/api/ollama";
 import { db } from "@oss/db";
 import {
 	address as addressTable,
@@ -17,6 +16,7 @@ import {
 	user as userTable,
 	widget as widgetTable,
 } from "@oss/db/schema";
+import { extractInvoiceFromOllama } from "@oss/llm/extract";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod/v4";
 import { protectedProcedure, publicProcedure } from "..";

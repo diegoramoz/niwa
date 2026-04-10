@@ -2,7 +2,7 @@
 id: "001"
 title: Scaffold @oss/llm package and migrate extraction logic from packages/api
 prd: "0001"
-status: open
+status: closed
 type: afk
 blocked_by: []
 created: 2026-04-10
@@ -37,3 +37,21 @@ None — can start immediately.
 
 - `packages/api` continues to work unchanged after migration
 - Extraction logic has a single canonical home in `@oss/llm`
+
+## Completion
+
+Created `packages/llm` (`@oss/llm`) as a standalone ESM package with no `workspace:*` dependencies. The package contains:
+
+- `src/config.ts` — zod schema parsing `OLLAMA_MODEL` (default: `llama3.2-vision`) and `OLLAMA_URL` (default: `http://localhost:11434`) from `process.env`
+- `src/extract.ts` — extraction logic migrated from `packages/api/src/ollama.ts`; `extractInvoiceFromOllama` now accepts an optional `headers` param forwarded to the fetch call; reads model and base URL from config at runtime
+- `src/index.ts` — re-exports `extractInvoiceFromOllama` and `OllamaExtraction`
+- `.env.example` — documents all env vars
+
+Updated `packages/api/package.json` to add `"@oss/llm": "workspace:*"`. Updated `packages/api/src/routers/index.ts` import from `@oss/api/ollama` to `@oss/llm`. Deleted `packages/api/src/ollama.ts`. Both packages typecheck cleanly (pre-existing JSX errors in other packages are unrelated).
+
+## Suggested Commit
+
+DIEGO: 001 PRD-0001 — scaffold @oss/llm and migrate extraction logic from packages/api
+
+- packages/llm: new standalone ESM package with config.ts (zod env parsing), extract.ts (migrated from api/ollama.ts with optional headers param), index.ts
+- packages/api: added @oss/llm dep, updated import in routers/index.ts, deleted ollama.ts
