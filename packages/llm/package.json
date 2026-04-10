@@ -13,6 +13,7 @@
   },
   "scripts": {
     "start": "bun scripts/start.ts",
+    "tunnel": "bun scripts/tunnel.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },

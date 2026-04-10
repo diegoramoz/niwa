@@ -9,8 +9,10 @@
  */
 
 import { resolve } from "node:path";
+import type { Subprocess } from "bun";
 import { config as loadDotenv } from "dotenv";
 import { isModelInList } from "@/ollama-utils";
+import { spawnTunnel } from "./tunnel";
 
 loadDotenv({ path: resolve(import.meta.dir, "../.env") });
 
@@ -74,14 +76,26 @@ async function main() {
 		process.exit(1);
 	}
 
+	const CF_TUNNEL_TOKEN = process.env.CF_TUNNEL_TOKEN;
+	if (!CF_TUNNEL_TOKEN) {
+		console.error(
+			"[llm] ERROR: CF_TUNNEL_TOKEN is not set.\n" +
+				"See packages/llm/README.md for the one-time Cloudflare setup runbook."
+		);
+		process.exit(1);
+	}
+
 	log("Starting ollama serve…");
 	const ollamaProc = Bun.spawn(["ollama", "serve"], {
 		stdout: "inherit",
 		stderr: "inherit",
 	});
 
+	let tunnelProc: Subprocess | null = null;
+
 	const cleanup = () => {
 		log("Shutting down…");
+		tunnelProc?.kill();
 		ollamaProc.kill();
 		process.exit(0);
 	};
@@ -99,13 +113,18 @@ async function main() {
 			await pullModel(OLLAMA_MODEL);
 		}
 
+		tunnelProc = spawnTunnel(CF_TUNNEL_TOKEN, process.env.CF_TUNNEL_HOSTNAME);
+
 		log(`Ready. Model: ${OLLAMA_MODEL}  Endpoint: ${OLLAMA_URL}`);
 
-		// Keep the process alive until SIGINT/SIGTERM
-		await ollamaProc.exited;
+		// Keep both processes alive until SIGINT/SIGTERM
+		await Promise.race([ollamaProc.exited, tunnelProc.exited]);
+		log("A child process exited unexpectedly — shutting down.");
+		cleanup();
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
 		console.error(`[llm] ERROR: ${message}`);
+		tunnelProc?.kill();
 		ollamaProc.kill();
 		process.exit(1);
 	}
