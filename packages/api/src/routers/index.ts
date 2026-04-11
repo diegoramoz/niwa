@@ -337,6 +337,39 @@ const invoiceRouter = {
 		}),
 };
 
+const pingRouter = {
+	/**
+	 * Pings the local machine via its Cloudflare tunnel (or localhost fallback).
+	 * Returns the raw response from packages/local-machine plus the URL that
+	 * was contacted, so the UI can show the full request path.
+	 */
+	ping: publicProcedure.handler(async () => {
+		const url = `${env.LOCAL_MACHINE_PING_URL}/ping`;
+		try {
+			const res = await fetch(url);
+			if (!res.ok) {
+				return {
+					ok: false as const,
+					error: `Local machine responded with ${res.status}`,
+					via: url,
+				};
+			}
+			const data = (await res.json()) as {
+				pong: boolean;
+				machine: string;
+				timestamp: string;
+			};
+			return { ok: true as const, ...data, via: url };
+		} catch (err) {
+			return {
+				ok: false as const,
+				error: err instanceof Error ? err.message : String(err),
+				via: url,
+			};
+		}
+	}),
+};
+
 export const appRouter = {
 	widget: widgetRouter,
 	user: userRouter,
@@ -345,6 +378,7 @@ export const appRouter = {
 	creditCard: creditCardRouter,
 	address: addressRouter,
 	invoice: invoiceRouter,
+	ping: pingRouter,
 };
 
 export type AppRouter = typeof appRouter;

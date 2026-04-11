@@ -19,6 +19,7 @@ export const env = createEnv({
 		OLLAMA_URL: z.url().optional(),
 		CF_ACCESS_CLIENT_ID: z.string().optional(),
 		CF_ACCESS_CLIENT_SECRET: z.string().optional(),
+		LOCAL_MACHINE_PING_URL: z.url().default("http://localhost:7001"),
 	},
 	runtimeEnv: process.env,
 	emptyStringAsUndefined: true,
