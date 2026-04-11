@@ -14,7 +14,8 @@
     "OLLAMA_URL",
     "CF_ACCESS_CLIENT_ID",
     "CF_ACCESS_CLIENT_SECRET",
-    "LOCAL_MACHINE_PING_URL"
+    "LOCAL_MACHINE_PING_URL",
+    "OLLAMA_MODEL"
   ],
   "tasks": {
     "build": {

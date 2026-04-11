@@ -18,7 +18,6 @@
     "@oss/auth": "workspace:*",
     "@oss/db": "workspace:*",
     "@oss/env": "workspace:*",
-    "@oss/llm": "workspace:*",
     "next": "catalog:",
     "zod": "catalog:"
   },

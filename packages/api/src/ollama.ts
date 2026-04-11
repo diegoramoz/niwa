@@ -1,4 +1,4 @@
-import { loadConfig } from "./config";
+import { env } from "@oss/env/server";
 
 export type OllamaExtraction = {
 	merchant: string;
@@ -66,13 +66,13 @@ function safeParseExtraction(raw: string): OllamaExtraction {
 }
 
 /**
- * Send an image buffer to the locally running Ollama vision model
+ * Send an image buffer to the Ollama instance (exposed via Cloudflare Tunnel)
  * and extract structured invoice fields.
  *
  * @param buffer - Raw file bytes (must be an image: JPEG, PNG, or WEBP)
  * @param mimeType - MIME type of the file
  * @param headers - Optional HTTP headers to include in the request (e.g. Cloudflare Access tokens)
- * @throws {Error} if the file is a PDF (PDF-to-image conversion requires additional setup)
+ * @throws {Error} if the file is a PDF
  * @throws {Error} if Ollama is unreachable
  */
 export async function extractInvoiceFromOllama(
@@ -87,9 +87,9 @@ export async function extractInvoiceFromOllama(
 		);
 	}
 
-	const config = loadConfig();
-	const url = `${config.OLLAMA_URL}/api/generate`;
-	const model = config.OLLAMA_MODEL;
+	const ollamaUrl = env.OLLAMA_URL ?? "http://localhost:11434";
+	const model = env.OLLAMA_MODEL;
+	const url = `${ollamaUrl}/api/generate`;
 	const base64 = buffer.toString("base64");
 
 	let res: Response;
@@ -112,8 +112,8 @@ export async function extractInvoiceFromOllama(
 		const message = err instanceof Error ? err.message : String(err);
 		if (message.includes("ECONNREFUSED") || message.includes("fetch failed")) {
 			throw new Error(
-				"Ollama is not running. Start it with `ollama serve` and make sure " +
-					`\`${model}\` is pulled (\`ollama pull ${model}\`).`
+				"Ollama is not running or unreachable. Make sure the Cloudflare Tunnel is up " +
+					"and OLLAMA_URL points to the tunnel hostname."
 			);
 		}
 		throw new Error(`Failed to reach Ollama: ${message}`);

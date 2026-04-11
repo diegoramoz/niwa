@@ -17,6 +17,7 @@ export const env = createEnv({
 			.enum(["development", "production", "test"])
 			.default("development"),
 		OLLAMA_URL: z.url().optional(),
+		OLLAMA_MODEL: z.string().default("llama3.2-vision"),
 		CF_ACCESS_CLIENT_ID: z.string().min(1),
 		CF_ACCESS_CLIENT_SECRET: z.string().min(1),
 		LOCAL_MACHINE_PING_URL: z.url().default("http://localhost:7001"),

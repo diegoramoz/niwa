@@ -17,10 +17,10 @@ import {
 	widget as widgetTable,
 } from "@oss/db/schema";
 import { env } from "@oss/env/server";
-import { extractInvoiceFromOllama } from "@oss/llm/extract";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod/v4";
 import { protectedProcedure, publicProcedure } from "..";
+import { extractInvoiceFromOllama } from "../ollama";
 
 // export const appRouter = {
 // 	healthCheck: publicProcedure.handler(() => {

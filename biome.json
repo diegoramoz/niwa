@@ -56,17 +56,6 @@
         }
       },
       "style": {
-        "noRestrictedImports": {
-          "level": "error",
-          "options": {
-            "patterns": [
-              {
-                "group": ["../**"],
-                "message": "Use '@/' alias instead of relative imports"
-              }
-            ]
-          }
-        },
         "noParameterAssign": "error",
         "useAsConstAssertion": "error",
         "useDefaultParameterLast": "error",

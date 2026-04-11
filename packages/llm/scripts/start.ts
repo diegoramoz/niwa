@@ -1,20 +1,17 @@
 #!/usr/bin/env bun
 
 /**
- * start.ts — start Ollama (native) and pull the configured model.
+ * start.ts — start Ollama (native) and expose it via Cloudflare Tunnel.
  *
  * Usage:
  *   bun run start
- *   OLLAMA_MODEL=llava bun run start
  */
 
 import type { Subprocess } from "bun";
 import { env } from "@/env";
-import { isModelInList } from "@/ollama-utils";
 import { spawnTunnel } from "./tunnel";
 
-const OLLAMA_MODEL = env.OLLAMA_MODEL;
-const OLLAMA_URL = env.OLLAMA_URL;
+const OLLAMA_URL = "http://localhost:11434";
 const POLL_INTERVAL_MS = 500;
 const POLL_TIMEOUT_MS = 30_000;
 
@@ -25,15 +22,6 @@ function log(msg: string) {
 function checkOllamaInstalled(): boolean {
 	const result = Bun.spawnSync(["which", "ollama"]);
 	return result.exitCode === 0;
-}
-
-async function isOllamaReady(url: string): Promise<boolean> {
-	try {
-		const res = await fetch(`${url}/api/tags`);
-		return res.ok;
-	} catch {
-		return false;
-	}
 }
 
 async function waitForOllama(url: string, timeoutMs: number): Promise<void> {
@@ -50,27 +38,6 @@ async function waitForOllama(url: string, timeoutMs: number): Promise<void> {
 		await Bun.sleep(POLL_INTERVAL_MS);
 	}
 	throw new Error(`Ollama did not become ready within ${timeoutMs / 1000}s`);
-}
-
-function isModelPulled(model: string): boolean {
-	const result = Bun.spawnSync(["ollama", "list"]);
-	if (result.exitCode !== 0) {
-		return false;
-	}
-	const output = new TextDecoder().decode(result.stdout);
-	return isModelInList(output, model);
-}
-
-async function pullModel(model: string): Promise<void> {
-	log(`Pulling model ${model}…`);
-	const proc = Bun.spawn(["ollama", "pull", model], {
-		stdout: "inherit",
-		stderr: "inherit",
-	});
-	const exitCode = await proc.exited;
-	if (exitCode !== 0) {
-		throw new Error(`ollama pull exited with code ${exitCode}`);
-	}
 }
 
 async function main() {
@@ -93,9 +60,13 @@ async function main() {
 
 	let ollamaProc: Subprocess | null = null;
 
-	if (await isOllamaReady(OLLAMA_URL)) {
-		log(`Detected existing Ollama instance at ${OLLAMA_URL} — reusing it.`);
-	} else {
+	// Check if Ollama is already running; if not, start it.
+	try {
+		const res = await fetch(`${OLLAMA_URL}/api/tags`);
+		if (res.ok) {
+			log(`Detected existing Ollama instance at ${OLLAMA_URL} — reusing it.`);
+		}
+	} catch {
 		log("Starting ollama serve…");
 		ollamaProc = Bun.spawn(["ollama", "serve"], {
 			stdout: "inherit",
@@ -119,22 +90,17 @@ async function main() {
 		await waitForOllama(OLLAMA_URL, POLL_TIMEOUT_MS);
 		log("Ollama is ready.");
 
-		if (isModelPulled(OLLAMA_MODEL)) {
-			log(`Model ${OLLAMA_MODEL} already present — skipping pull.`);
-		} else {
-			await pullModel(OLLAMA_MODEL);
-		}
-
 		tunnelProc = spawnTunnel(CF_TUNNEL_TOKEN, env.CF_TUNNEL_HOSTNAME);
 
-		log(`Ready. Model: ${OLLAMA_MODEL}  Endpoint: ${OLLAMA_URL}`);
+		log(
+			`Tunnel up. Ollama exposed at https://${env.CF_TUNNEL_HOSTNAME ?? "<hostname>"}`
+		);
 
 		const processWatchers = [tunnelProc.exited];
 		if (ollamaProc) {
 			processWatchers.unshift(ollamaProc.exited);
 		}
 
-		// Keep child processes alive until SIGINT/SIGTERM.
 		await Promise.race(processWatchers);
 		log("A child process exited unexpectedly — shutting down.");
 		cleanup();
