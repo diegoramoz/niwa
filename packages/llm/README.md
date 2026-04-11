@@ -1,6 +1,6 @@
 # @oss/llm
 
-Standalone package that starts Ollama and exposes port `11434` publicly via a Cloudflare Tunnel with Zero Trust Access authentication.
+Standalone package that starts Ollama and runs a local proxy on port `7002` that forwards to Ollama on `11434`. The package also exposes it publicly via a Cloudflare Tunnel with Zero Trust Access authentication.
 
 The finance app reaches Ollama through the tunnel subdomain, authenticating with a Cloudflare Access service token (`CF-Access-Client-Id` / `CF-Access-Client-Secret`).
 
@@ -16,9 +16,10 @@ bun run start
 
 1. Check `ollama` CLI is installed
 2. Start `ollama serve` if not already running
-3. Wait for Ollama to become ready on port `11434`
-4. Start the Cloudflare Tunnel
-5. Print the public URL and keep both processes running
+3. Start a local reverse proxy on `http://localhost:7002` that forwards to `http://localhost:11434`
+4. Wait for Ollama to become ready on port `11434`
+5. Start the Cloudflare Tunnel
+6. Print the public URL and keep all processes running
 
 Press `Ctrl+C` to shut everything down cleanly.
 
@@ -35,6 +36,7 @@ Copy `.env.example` to `.env` and fill in the values.
 
 | Variable | Default | Description |
 |---|---|---|
+| `LLM_PROXY_PORT` | `7002` | Local reverse proxy port that forwards to Ollama |
 | `OLLAMA_URL` | `http://localhost:11434` | Base URL of the local Ollama server |
 | `CF_TUNNEL_TOKEN` | — | Token from `cloudflared tunnel token <name>` |
 | `CF_TUNNEL_HOSTNAME` | — | Public hostname (e.g. `llm.example.com`) printed on startup |

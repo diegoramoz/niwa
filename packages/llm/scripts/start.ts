@@ -12,6 +12,7 @@ import { env } from "@/env";
 import { spawnTunnel } from "./tunnel";
 
 const OLLAMA_URL = "http://localhost:11434";
+const OLLAMA_TARGET = new URL(OLLAMA_URL);
 const POLL_INTERVAL_MS = 500;
 const POLL_TIMEOUT_MS = 30_000;
 
@@ -22,6 +23,56 @@ function log(msg: string) {
 function checkOllamaInstalled(): boolean {
 	const result = Bun.spawnSync(["which", "ollama"]);
 	return result.exitCode === 0;
+}
+
+function startProxyServer(proxyPort: number): Bun.Server<unknown> {
+	const server = Bun.serve({
+		port: proxyPort,
+		async fetch(req) {
+			const reqUrl = new URL(req.url);
+			const upstreamUrl = new URL(
+				reqUrl.pathname + reqUrl.search,
+				OLLAMA_TARGET
+			);
+
+			const headers = new Headers(req.headers);
+			headers.set("host", OLLAMA_TARGET.host);
+
+			const method = req.method.toUpperCase();
+			const init: RequestInit = {
+				method,
+				headers,
+				redirect: "manual",
+			};
+
+			if (method !== "GET" && method !== "HEAD") {
+				init.body = req.body;
+			}
+
+			try {
+				const upstream = await fetch(upstreamUrl, init);
+				return new Response(upstream.body, {
+					status: upstream.status,
+					statusText: upstream.statusText,
+					headers: upstream.headers,
+				});
+			} catch (error) {
+				const reason = error instanceof Error ? error.message : String(error);
+				return Response.json(
+					{
+						error: "Failed to reach Ollama upstream",
+						upstream: OLLAMA_URL,
+						reason,
+					},
+					{ status: 502 }
+				);
+			}
+		},
+	});
+
+	log(`Proxy listening on http://localhost:${server.port} -> ${OLLAMA_URL}`);
+
+	return server;
 }
 
 async function waitForOllama(url: string, timeoutMs: number): Promise<void> {
@@ -59,6 +110,7 @@ async function main() {
 	}
 
 	let ollamaProc: Subprocess | null = null;
+	const proxyServer = startProxyServer(env.LLM_PROXY_PORT);
 
 	// Check if Ollama is already running; if not, start it.
 	try {
@@ -78,6 +130,7 @@ async function main() {
 
 	const cleanup = () => {
 		log("Shutting down…");
+		proxyServer.stop();
 		tunnelProc?.kill();
 		ollamaProc?.kill();
 		process.exit(0);
@@ -107,6 +160,7 @@ async function main() {
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
 		console.error(`[llm] ERROR: ${message}`);
+		proxyServer.stop();
 		tunnelProc?.kill();
 		ollamaProc?.kill();
 		process.exit(1);
