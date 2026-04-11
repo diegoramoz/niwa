@@ -27,6 +27,15 @@ function checkOllamaInstalled(): boolean {
 	return result.exitCode === 0;
 }
 
+async function isOllamaReady(url: string): Promise<boolean> {
+	try {
+		const res = await fetch(`${url}/api/tags`);
+		return res.ok;
+	} catch {
+		return false;
+	}
+}
+
 async function waitForOllama(url: string, timeoutMs: number): Promise<void> {
 	const deadline = Date.now() + timeoutMs;
 	while (Date.now() < deadline) {
@@ -82,18 +91,24 @@ async function main() {
 		process.exit(1);
 	}
 
-	log("Starting ollama serve…");
-	const ollamaProc = Bun.spawn(["ollama", "serve"], {
-		stdout: "inherit",
-		stderr: "inherit",
-	});
+	let ollamaProc: Subprocess | null = null;
+
+	if (await isOllamaReady(OLLAMA_URL)) {
+		log(`Detected existing Ollama instance at ${OLLAMA_URL} — reusing it.`);
+	} else {
+		log("Starting ollama serve…");
+		ollamaProc = Bun.spawn(["ollama", "serve"], {
+			stdout: "inherit",
+			stderr: "inherit",
+		});
+	}
 
 	let tunnelProc: Subprocess | null = null;
 
 	const cleanup = () => {
 		log("Shutting down…");
 		tunnelProc?.kill();
-		ollamaProc.kill();
+		ollamaProc?.kill();
 		process.exit(0);
 	};
 	process.on("SIGINT", cleanup);
@@ -114,15 +129,20 @@ async function main() {
 
 		log(`Ready. Model: ${OLLAMA_MODEL}  Endpoint: ${OLLAMA_URL}`);
 
-		// Keep both processes alive until SIGINT/SIGTERM
-		await Promise.race([ollamaProc.exited, tunnelProc.exited]);
+		const processWatchers = [tunnelProc.exited];
+		if (ollamaProc) {
+			processWatchers.unshift(ollamaProc.exited);
+		}
+
+		// Keep child processes alive until SIGINT/SIGTERM.
+		await Promise.race(processWatchers);
 		log("A child process exited unexpectedly — shutting down.");
 		cleanup();
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
 		console.error(`[llm] ERROR: ${message}`);
 		tunnelProc?.kill();
-		ollamaProc.kill();
+		ollamaProc?.kill();
 		process.exit(1);
 	}
 }
