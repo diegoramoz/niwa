@@ -14,7 +14,8 @@ export async function proxy(request: NextRequest) {
 
 	const isPublic =
 		PUBLIC_ROUTES.some((route) => pathname.startsWith(route)) ||
-		pathname.startsWith("/api/auth");
+		pathname.startsWith("/api/auth") ||
+		pathname.endsWith("/opengraph-image");
 
 	if (isPublic) {
 		return NextResponse.next();

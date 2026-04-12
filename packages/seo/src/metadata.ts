@@ -28,5 +28,6 @@ export function buildMetadata(page: PageInput, brand: BrandConfig): Metadata {
 			index: true,
 			follow: true,
 		},
+		...(brand.logoUrl && { other: { "og:logo": brand.logoUrl } }),
 	};
 }
