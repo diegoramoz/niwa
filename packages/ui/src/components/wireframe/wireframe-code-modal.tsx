@@ -125,7 +125,7 @@ export function WireframeCodeModal() {
 
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
-			<DialogTrigger>
+			<DialogTrigger className="inline-flex size-12 items-center justify-center rounded-full bg-blue-600 text-white shadow hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
 				<Code2 className="size-5" />
 				<span className="sr-only">View Code</span>
 			</DialogTrigger>

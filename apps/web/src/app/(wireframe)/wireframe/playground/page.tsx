@@ -1,12 +1,10 @@
 "use client";
 
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { buttonVariants } from "@oss/ui/components/button";
 import { ConfigurableWireframe } from "@oss/ui/components/wireframe/configurable-wireframe";
 import { LayoutControlsPanel } from "@oss/ui/components/wireframe/layout-controls-panel";
 import { WireframeCodeModal } from "@oss/ui/components/wireframe/wireframe-code-modal";
 import { WireframeConfigProvider } from "@oss/ui/components/wireframe/wireframe-config-provider";
-import { cn } from "@oss/ui/lib/utils";
 import Link from "next/link";
 
 function PlaygroundContent() {
@@ -34,10 +32,7 @@ function PlaygroundContent() {
 				<WireframeCodeModal />
 				<Link
 					aria-label="View on GitHub"
-					className={cn(
-						"size-12 rounded-full",
-						buttonVariants({ size: "icon", variant: "default" })
-					)}
+					className="inline-flex size-12 items-center justify-center rounded-full bg-white text-black shadow hover:bg-neutral-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-600"
 					href="https://github.com/zdiegoramos/oss"
 					rel="noopener noreferrer"
 					target="_blank"
