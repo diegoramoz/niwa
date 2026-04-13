@@ -2,7 +2,7 @@
 id: "005"
 title: DemoSidebar internal sub-component
 prd: "0002"
-status: open
+status: closed
 type: afk
 blocked_by: []
 created: 2026-04-13
@@ -33,3 +33,19 @@ None — can start immediately.
 ## User stories addressed
 
 - User story 1
+
+## Completion
+
+Extracted a file-local `DemoSidebar` component inside `configurable-wireframe.tsx` accepting `position` (`"left" | "right"`), `collapsed` (boolean), and `onToggle` (() => void). The `WireframeSidebar` wrapping, blue background block, header row (with `ComponentName` tooltip and toggle button), and the tall border div are all rendered from `DemoSidebar`.
+
+Key implementation details:
+- `isLeft = position === "left"` drives the three position-specific values.
+- `flex-row-reverse` for the right sidebar header is applied conditionally via `!isLeft && "flex-row-reverse"`.
+- Toggle arrow: `isLeft === collapsed ? "→" : "←"` — a single expression covering all four cases without nested ternaries (satisfies Biome's no-nested-ternary rule).
+- The two near-identical 30-line sidebar blocks in `ConfigurableWireframe` are now two `<DemoSidebar>` calls (~5 lines each).
+
+## Suggested Commit
+
+DIEGO: 005 PRD-0002 — DemoSidebar internal sub-component
+
+- packages/ui/src/components/wireframe/configurable-wireframe.tsx: extract file-local DemoSidebar, replace both sidebar blocks with two <DemoSidebar> usages

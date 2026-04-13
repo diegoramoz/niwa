@@ -31,6 +31,45 @@ function ComponentName({ title, code }: { title: string; code: string }) {
 	);
 }
 
+function DemoSidebar({
+	collapsed,
+	onToggle,
+	position,
+}: {
+	collapsed: boolean;
+	onToggle: () => void;
+	position: "left" | "right";
+}) {
+	const isLeft = position === "left";
+	const title = isLeft ? "Left Sidebar" : "Right Sidebar";
+	const code = `<WireframeSidebar position="${position}" collapsed={false} />`;
+	const toggleArrow = isLeft === collapsed ? "→" : "←";
+
+	return (
+		<WireframeSidebar collapsed={collapsed} position={position}>
+			<div className="min-h-full bg-blue-200 p-4 dark:bg-blue-900">
+				<div
+					className={cn(
+						"mb-4 flex items-center justify-between",
+						!isLeft && "flex-row-reverse",
+						collapsed && "justify-center"
+					)}
+				>
+					{!collapsed && <ComponentName code={code} title={title} />}
+					<button
+						className="p-2 hover:underline"
+						onClick={onToggle}
+						type="button"
+					>
+						{toggleArrow}
+					</button>
+				</div>
+				{!collapsed && <div className="h-[1000px] border border-border" />}
+			</div>
+		</WireframeSidebar>
+	);
+}
+
 export function ConfigurableWireframe({
 	children,
 }: {
@@ -92,68 +131,20 @@ export function ConfigurableWireframe({
 					</div>
 				</WireframeNav>
 			)}
-			{/* Render left sidebar if enabled */}
 			{config.showLeftSidebar && (
-				<WireframeSidebar collapsed={leftSidebarCollapsed} position="left">
-					<div className="min-h-full bg-blue-200 p-4 dark:bg-blue-900">
-						<div
-							className={cn(
-								"mb-4 flex items-center justify-between",
-								leftSidebarCollapsed && "justify-center"
-							)}
-						>
-							{leftSidebarCollapsed === false && (
-								<ComponentName
-									code={`<WireframeSidebar position="left" collapsed={false} />`}
-									title="Left Sidebar"
-								/>
-							)}
-
-							<button
-								className="p-2 hover:underline"
-								onClick={() => setLeftSidebarCollapsed(!leftSidebarCollapsed)}
-								type="button"
-							>
-								{leftSidebarCollapsed ? "→" : "←"}
-							</button>
-						</div>
-						{leftSidebarCollapsed === false && (
-							<div className="h-[1000px] border border-border" />
-						)}
-					</div>
-				</WireframeSidebar>
+				<DemoSidebar
+					collapsed={leftSidebarCollapsed}
+					onToggle={() => setLeftSidebarCollapsed(!leftSidebarCollapsed)}
+					position="left"
+				/>
 			)}
 
-			{/* Render right sidebar if enabled */}
 			{config.showRightSidebar && (
-				<WireframeSidebar collapsed={rightSidebarCollapsed} position="right">
-					<div className="min-h-full bg-blue-200 p-4 dark:bg-blue-900">
-						<div
-							className={cn(
-								"mb-4 flex flex-row-reverse items-center justify-between",
-								rightSidebarCollapsed && "justify-center"
-							)}
-						>
-							{rightSidebarCollapsed === false && (
-								<ComponentName
-									code={`<WireframeSidebar position="right" collapsed={false} />`}
-									title="Right Sidebar"
-								/>
-							)}
-
-							<button
-								className="p-2 hover:underline"
-								onClick={() => setRightSidebarCollapsed(!rightSidebarCollapsed)}
-								type="button"
-							>
-								{rightSidebarCollapsed ? "←" : "→"}
-							</button>
-						</div>
-						{rightSidebarCollapsed === false && (
-							<div className="h-[1000px] border border-border" />
-						)}
-					</div>
-				</WireframeSidebar>
+				<DemoSidebar
+					collapsed={rightSidebarCollapsed}
+					onToggle={() => setRightSidebarCollapsed(!rightSidebarCollapsed)}
+					position="right"
+				/>
 			)}
 
 			{children}
