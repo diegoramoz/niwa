@@ -52,7 +52,7 @@ function PlaygroundContent() {
 				<Link
 					aria-label="View on GitHub"
 					className="inline-flex size-12 items-center justify-center rounded-full bg-white text-black shadow hover:bg-neutral-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-600"
-					href="https://github.com/zdiegoramos/oss"
+					href="https://github.com/diegoramoz/oss"
 					rel="noopener noreferrer"
 					target="_blank"
 				>

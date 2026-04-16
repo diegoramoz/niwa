@@ -1,8 +1,8 @@
 export const WEB_METADATA = {
 	displayName: "My App",
 	github: {
-		repo: "zdiegoramos/oss",
-		url: "https://github.com/zdiegoramos/oss",
+		repo: "diegoramoz/oss",
+		url: "https://github.com/diegoramoz/oss",
 	},
 	shortName: "App",
 	description: "App description",

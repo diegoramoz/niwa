@@ -1,8 +1,8 @@
 export const FINANCE_METADATA = {
 	displayName: "Finance App",
 	github: {
-		repo: "zdiegoramos/oss",
-		url: "https://github.com/zdiegoramos/oss",
+		repo: "diegoramoz/oss",
+		url: "https://github.com/diegoramoz/oss",
 	},
 	shortName: "Finance",
 	description: "App description",
