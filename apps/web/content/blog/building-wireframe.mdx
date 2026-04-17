@@ -1,0 +1,263 @@
+---
+title: Building The Wireframe Component
+date: 2025-12-03
+description: "Navbar and sidebar layout component using CSS variables and :has() selector."
+tags: ["wireframe", "layout", "css", "tailwindcss", "react", "shadcn"]
+---
+
+Creating navbars and sidebars was something I always dreaded. Position elements absolutely, manage z-indices, calculate margins, and handle responsive behavior. It felt like reinventing the wheel every time.
+
+So I built Wireframe — a declarative layout component that handles all the complexity for you.
+
+The component lets you compose layouts with top navigation, bottom navigation, sidebars, and responsive behavior without worrying about the underlying CSS. It just works.
+
+## The Problem with Traditional Layouts
+
+Most layout systems require you to manually calculate spacing. If you have a top nav at `64px` and a left sidebar at `256px`, you need to add those margins yourself:
+
+```tsx
+<div className="ml-64 mt-16">
+  {/* Your content */}
+</div>
+```
+
+This breaks down quickly. What happens when:
+- You want to collapse the sidebar?
+- You add a bottom navigation on mobile?
+- Different pages have different layout combinations?
+
+You end up with conditional classes everywhere, or worse, multiple layout components with duplicated logic.
+
+## The Solution: CSS Variables + `:has()` Selector
+
+The breakthrough came from combining CSS variables with the `:has()` selector. The root `<Wireframe/>` detects which children exist and adjusts spacing automatically.
+
+Here's the core concept:
+
+```css
+/* If wireframe has a top nav, add top margin to content */
+&:has(*[data-wf-top-nav]) {
+  margin-top: calc(var(--top-nav-height) + var(--top-nav-top-offset) + var(--top-nav-bottom-offset));
+}
+
+/* If wireframe has an expanded left sidebar, add left margin to content */
+&:has([data-wf-left-sidebar="expanded"]) {
+  margin-left: calc(var(--left-sidebar-width-expanded) + var(--left-sidebar-left-offset) + var(--left-sidebar-right-offset));
+}
+```
+
+Here's how that looks in Tailwind syntax:
+
+```tsx
+const defaultConfig = [
+  // HAS TOP NAV, ADD TOP MARGIN WIREFRAME ROOT
+  "has-data-wf-top-nav:mt-[calc(var(--top-nav-height)+var(--top-nav-top-offset)+var(--top-nav-bottom-offset))]",
+  
+  // HAS LEFT SIDEBAR=EXPANDED, ADD LEFT MARGIN WIREFRAME CONTENT
+  "has-data-[wf-left-sidebar=expanded]:ml-[calc(var(--left-sidebar-width-expanded)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset))]",
+];
+```
+
+The `<Wireframe/>` automatically adjusts based on which children are present. No prop drilling. No context. Just declarative composition.
+
+## Handling the Corners Problem
+
+The tricky part wasn't the basic spacing—it was the corners.
+
+When you have both a top nav and a left sidebar, they overlap. Which one should win the corner space?
+
+Both are valid. Some websites (like X) give sidebars the corners. Others (like Gmail) give navbars the corners.
+
+I needed to support both patterns, and let users configure it per corner:
+
+```tsx
+<Wireframe
+  config={{
+    corners: {
+      topLeft: "sidebar",    // Sidebar takes top-left corner
+      topRight: "navbar",    // Navbar takes top-right corner
+      bottomLeft: "navbar",  // Navbar takes bottom-left corner
+      bottomRight: "sidebar" // Sidebar takes bottom-right corner
+    }
+  }}
+>
+```
+
+The implementation uses the same `:has()` pattern:
+
+```tsx
+const cornersConfig = {
+  navbar: {
+    topLeft: [
+      // HAS TOP NAV AND LEFT SIDEBAR, ADD TOP MARGIN TO LEFT SIDEBAR
+      "has-data-wf-top-nav:has-data-wf-left-sidebar:**:data-wf-left-sidebar:mt-(--top-nav-height)",
+    ],
+  },
+  sidebar: {
+    topLeft: [
+      // HAS TOP NAV AND LEFT SIDEBAR=EXPANDED, ADD LEFT MARGIN TO TOP NAV
+      "has-data-wf-top-nav:has-data-[wf-left-sidebar=expanded]:**:data-wf-top-nav:ml-[calc(var(--left-sidebar-width-expanded)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset))]",
+      // HAS TOP NAV AND LEFT SIDEBAR=COLLAPSED, ADD LEFT MARGIN TO TOP NAV
+      "has-data-wf-top-nav:has-data-[wf-left-sidebar=collapsed]:**:data-wf-top-nav:ml-[calc(var(--left-sidebar-width-collapsed)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset))]",
+    ],
+  },
+};
+```
+
+If the top-left corner is configured for `"navbar"`, the left sidebar gets a top margin. If it's configured for `"sidebar"`, the top nav gets a left margin.
+
+## Responsive Navigation
+
+Mobile apps typically use bottom navigation. Desktop apps use top navigation. I wanted to support both without duplicating code.
+
+The solution was a `responsive` position that switches based on viewport:
+
+```tsx
+<WireframeNav position="responsive">
+  {/* Bottom nav on mobile, top nav on desktop */}
+</WireframeNav>
+```
+
+This required a custom breakpoint in the Tailwind config:
+
+```css
+@theme {
+  --breakpoint-wf-nav: 40rem; /* 640px */
+}
+```
+
+Then the component uses conditional classes:
+
+```tsx
+<div
+  className={cn(
+    "fixed z-50",
+    // Mobile: bottom nav
+    "right-(--bottom-nav-right-offset) bottom-(--bottom-nav-bottom-offset) left-(--bottom-nav-left-offset) h-(--bottom-nav-height)",
+    // Desktop: top nav
+    "min-wf-nav:top-(--top-nav-top-offset) min-wf-nav:right-(--top-nav-right-offset) min-wf-nav:bottom-auto min-wf-nav:left-(--top-nav-left-offset) min-wf-nav:h-(--top-nav-height)"
+  )}
+  data-wf-responsive-nav
+>
+```
+
+Responsive corners are handled similarly, but you can only define the side not each corner. In other words, you choose whether the responsive nav takes the left or right side corners:
+
+```tsx
+corners: {
+  responsive: {
+    left: "navbar" // Mobile: navbar takes corner
+  }
+}
+```
+
+## Making it Type-Safe
+
+All CSS variables are typed:
+
+```tsx
+const wireframeCssVariables = [
+  "--top-nav-height",
+  "--top-nav-left-offset",
+  "--top-nav-right-offset",
+  "--bottom-nav-height",
+  "--left-sidebar-width-collapsed",
+  "--left-sidebar-width-expanded",
+  // ...
+] as const;
+
+export type WireframeCSSVariables = (typeof wireframeCssVariables)[number];
+```
+
+This gives autocomplete when configuring:
+
+```tsx
+<Wireframe
+  config={{
+    cssVariables: {
+      "--top-nav-height": 16,  // Autocomplete suggests all variables
+      "--left-sidebar-width-expanded": 52,
+    }
+  }}
+>
+```
+
+I also added a helper that converts Tailwind spacing values:
+
+```tsx
+function tailwindSpacing(value: number) {
+  return `calc(var(--spacing) * ${value})`;
+}
+
+function parseCssVariable(value?: string | number, defaultValue = "0px") {
+  if (typeof value === "number") {
+    return tailwindSpacing(value);
+  }
+  return value ?? defaultValue;
+}
+```
+
+So you can pass `16` and it becomes `calc(var(--spacing) * 16)`, which equals `4rem` with Tailwind's default spacing scale.
+
+## The Developer Experience
+
+The API is deliberately simple. You compose layouts by adding child components:
+
+```tsx
+<Wireframe>
+  <WireframeNav position="top">
+    {/* Top navigation */}
+  </WireframeNav>
+  
+  <WireframeSidebar position="left" collapsed={isCollapsed}>
+    {/* Left sidebar */}
+  </WireframeSidebar>
+  
+  <main>
+    {/* Your content automatically gets correct spacing */}
+  </main>
+</Wireframe>
+```
+
+It's a thing of beauty. No more manual margin calculations or conditional classes.
+
+## Why This Approach Works
+
+**No JavaScript.** Everything is pure CSS. The browser handles all the math.
+
+**Collocation.** The configuration lives with the component. You can see at a glance what spacing a layout uses.
+
+**Composability.** Mix and match navigation bars, sidebars, and responsive behavior.
+
+**Type safety.** CSS variables are typed. Configurations are validated. You can't pass invalid values.
+
+The component handles edge cases you'd otherwise forget about:
+- Sidebars scroll independently with hidden scrollbars
+- Fixed positioning with proper z-index layering  
+- Responsive breakpoints that affect both nav and corners
+- Automatic content min-height calculations
+
+## What Makes Wireframe Different
+
+Most layout libraries give you pre-built components with limited configuration. Wireframe gives you primitives that compose.
+
+You're not locked into specific patterns. Want both left and right sidebars? Add them. Want bottom nav on some pages and top nav on others? Mix them. Want different corner configurations per page? Configure it.
+
+The `:has()` selector does the heavy lifting. As you add children, the layout automatically adjusts. It feels like magic, but it's just modern CSS being used correctly.
+
+## Building Components That Feel Right
+
+This component taught me that the best abstractions feel invisible. You shouldn't think about the underlying implementation — you just declare what you want and it works.
+
+The key decisions were:
+1. **CSS variables for configuration** - Makes values customizable and animatable
+2. **`:has()` selector for detection** - Eliminates prop drilling and manual coordination
+3. **Data attributes for state** - Clean separation between behavior and styling
+
+When these pieces clicked together, the component went from "nice idea" to "this just works."
+
+And that's what matters. Not clever code or complex state management. Just a component that solves a real problem elegantly.
+
+---
+
+Give `<Wireframe/>` a try! My hope is that no other developer becomes frustrated wrestling with margins and z-indices ever again.

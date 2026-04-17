@@ -6,7 +6,7 @@ export default function HomeLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<div className="mx-auto max-w-prose px-[4lvw] py-8 lg:px-0">
+		<div className="mx-auto max-w-xl px-[4lvw] py-8 lg:px-0">
 			<nav className="mb-8 flex gap-4 text-sm">
 				<Link className="underline underline-offset-4" href="/">
 					Home
