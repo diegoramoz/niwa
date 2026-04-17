@@ -51,14 +51,43 @@ Here's how that looks in Tailwind syntax:
 ```tsx
 const defaultConfig = [
   // HAS TOP NAV, ADD TOP MARGIN WIREFRAME ROOT
-  "has-data-wf-top-nav:mt-[calc(var(--top-nav-height)+var(--top-nav-top-offset)+var(--top-nav-bottom-offset))]",
+  "has-data-wf-top-nav:mt-[calc(var(--top-nav-height)+var(--top-nav-top-offset)+var(--top-nav-bottom-offset)+env(safe-area-inset-top))]",
   
   // HAS LEFT SIDEBAR=EXPANDED, ADD LEFT MARGIN WIREFRAME CONTENT
-  "has-data-[wf-left-sidebar=expanded]:ml-[calc(var(--left-sidebar-width-expanded)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset))]",
+  "has-data-[wf-left-sidebar=expanded]:ml-[calc(var(--left-sidebar-width-expanded)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset)+env(safe-area-inset-left))]",
 ];
 ```
 
 The `<Wireframe/>` automatically adjusts based on which children are present. No prop drilling. No context. Just declarative composition.
+
+## Handling Safe Area Insets
+
+Before getting to corners, there's another layer of complexity: safe area insets on notched devices.
+
+Every spacing calculation needs to account for them. A top nav on an iPhone shouldn't overlap the status bar. A bottom nav needs to sit above the home indicator.
+
+Wireframe handles this automatically by folding `env(safe-area-inset-*)` into every margin calculation:
+
+```tsx
+// HAS TOP NAV, ADD TOP MARGIN
+"has-data-wf-top-nav:mt-[calc(var(--top-nav-height)+var(--top-nav-top-offset)+var(--top-nav-bottom-offset)+env(safe-area-inset-top))]",
+
+// NO TOP NAV, ADD JUST THE SAFE AREA INSET
+"not-has-data-wf-top-nav:mt-[env(safe-area-inset-top)]",
+```
+
+When no nav is present, the safe area inset is still applied so content never bleeds under the notch. When a nav is present, the inset is included in the nav's own height calculation.
+
+Wireframe also renders invisible overlay divs that cover each safe area with the background color — ensuring no visual gaps on notched devices:
+
+```tsx
+<SafeAreaInsetTop />
+<SafeAreaInsetBottom />
+<SafeAreaInsetLeft />
+<SafeAreaInsetRight />
+```
+
+This can be disabled by passing `safeAreas: false` to the config.
 
 ## Handling the Corners Problem
 
@@ -133,21 +162,54 @@ Then the component uses conditional classes:
   className={cn(
     "fixed z-50",
     // Mobile: bottom nav
-    "right-(--bottom-nav-right-offset) bottom-(--bottom-nav-bottom-offset) left-(--bottom-nav-left-offset) h-(--bottom-nav-height)",
+    "right-[calc(var(--bottom-nav-right-offset)+env(safe-area-inset-right))]",
+    "bottom-[calc(var(--bottom-nav-bottom-offset)+env(safe-area-inset-bottom))]",
+    "left-[calc(var(--bottom-nav-left-offset)+env(safe-area-inset-left))]",
+    "h-(--bottom-nav-height)",
     // Desktop: top nav
-    "min-wf-nav:top-(--top-nav-top-offset) min-wf-nav:right-(--top-nav-right-offset) min-wf-nav:bottom-auto min-wf-nav:left-(--top-nav-left-offset) min-wf-nav:h-(--top-nav-height)"
+    "min-wf-nav:top-[calc(var(--top-nav-top-offset)+env(safe-area-inset-top))]",
+    "min-wf-nav:right-[calc(var(--top-nav-right-offset)+env(safe-area-inset-right))]",
+    "min-wf-nav:left-[calc(var(--top-nav-left-offset)+env(safe-area-inset-left))]",
+    "min-wf-nav:h-(--top-nav-height)",
+    "min-wf-nav:bottom-auto",
   )}
   data-wf-responsive-nav
 >
 ```
 
-Responsive corners are handled similarly, but you can only define the side not each corner. In other words, you choose whether the responsive nav takes the left or right side corners:
+Responsive corners are handled similarly, but you only choose the side — not each corner individually:
 
 ```tsx
 corners: {
   responsive: {
-    left: "navbar" // Mobile: navbar takes corner
+    left: "navbar",  // Responsive nav takes left corners
+    right: "sidebar" // Sidebar takes right corners
   }
+}
+```
+
+## Hiding Navigation Per Viewport
+
+Sometimes you want completely different navigation components for mobile and desktop rather than a responsive one. The `hide` prop handles this:
+
+```tsx
+<WireframeNav position="top" hide="mobile">
+  {/* Only rendered on desktop */}
+</WireframeNav>
+
+<WireframeNav position="bottom" hide="desktop">
+  {/* Only rendered on mobile */}
+</WireframeNav>
+```
+
+The same prop works on `<WireframeSidebar/>`. This uses the `useWireframe()` hook internally, which compares `window.innerWidth` against the configured `mobileBreakpoint` (default: `768px`).
+
+You can also use the hook directly in your own components:
+
+```tsx
+function MyComponent() {
+  const { isMobile, windowWidth } = useWireframe();
+  // ...
 }
 ```
 
@@ -189,11 +251,11 @@ function tailwindSpacing(value: number) {
   return `calc(var(--spacing) * ${value})`;
 }
 
-function parseCssVariable(value?: string | number, defaultValue = "0px") {
+function parseCssVariable(value: string | number) {
   if (typeof value === "number") {
     return tailwindSpacing(value);
   }
-  return value ?? defaultValue;
+  return value;
 }
 ```
 
@@ -210,20 +272,38 @@ The API is deliberately simple. You compose layouts by adding child components:
   </WireframeNav>
   
   <WireframeSidebar position="left" collapsed={isCollapsed}>
-    {/* Left sidebar */}
+    <WireframeSidebarHeader>
+      {/* Logo, workspace switcher, etc. */}
+    </WireframeSidebarHeader>
+
+    <WireframeSidebarContent>
+      <WireframeSidebarGroup>
+        {/* Nav links */}
+      </WireframeSidebarGroup>
+    </WireframeSidebarContent>
+
+    <WireframeSidebarFooter>
+      {/* User profile, settings */}
+    </WireframeSidebarFooter>
   </WireframeSidebar>
-  
+
+  <WireframeStickyNav>
+    {/* Breadcrumbs, page-level actions — sticks below the top nav */}
+  </WireframeStickyNav>
+
   <main>
     {/* Your content automatically gets correct spacing */}
   </main>
 </Wireframe>
 ```
 
+`WireframeStickyNav` is a useful addition — it renders a `position: sticky` bar that tracks just below the fixed top nav, perfect for breadcrumbs or secondary toolbars without breaking scroll behavior.
+
 It's a thing of beauty. No more manual margin calculations or conditional classes.
 
 ## Why This Approach Works
 
-**No JavaScript.** Everything is pure CSS. The browser handles all the math.
+**No JavaScript for layout.** Everything is pure CSS. The browser handles all the math. JavaScript is only used for the `isMobile` check powering the `hide` prop.
 
 **Collocation.** The configuration lives with the component. You can see at a glance what spacing a layout uses.
 
@@ -232,6 +312,7 @@ It's a thing of beauty. No more manual margin calculations or conditional classe
 **Type safety.** CSS variables are typed. Configurations are validated. You can't pass invalid values.
 
 The component handles edge cases you'd otherwise forget about:
+- Safe area insets on notched devices
 - Sidebars scroll independently with hidden scrollbars
 - Fixed positioning with proper z-index layering  
 - Responsive breakpoints that affect both nav and corners
