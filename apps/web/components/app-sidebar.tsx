@@ -1,12 +1,10 @@
 "use client";
 
-import { SiGithub, SiX, SiYoutube } from "@icons-pack/react-simple-icons";
 import { Item, ItemGroup, ItemMedia } from "@oss/ui/components/item";
 import {
 	WireframeSidebar,
 	WireframeSidebarContent,
 	WireframeSidebarFooter,
-	WireframeSidebarHeader,
 } from "@oss/ui/components/wireframe";
 import { isRouteActive } from "@oss/ui/hooks/use-nav-routes";
 import { cn } from "@oss/ui/lib/utils";
@@ -15,11 +13,11 @@ import { PRIMITIVES_NAV } from "config/primitives";
 import {
 	BlocksIcon,
 	BookOpenIcon,
-	LayoutGrid,
+	HomeIcon,
+	// LayoutGrid,
 	MoonIcon,
 	SunIcon,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -58,34 +56,37 @@ export function AppSidebar() {
 			hide="mobile"
 			position="left"
 		>
-			<WireframeSidebarHeader className="p-3">
-				<div className="px-3 py-2">
-					<Link
-						className="font-semibold text-sm transition-colors hover:text-muted-foreground"
-						href="/"
-					>
-						<div className="flex items-center justify-between">
-							<div>
-								<h1 className="font-bold">Diego Ramos</h1>
-								<div className="font-medium text-muted-foreground text-xs">
-									Full-Stack Engineer
-								</div>
-							</div>
-							<Image
-								alt="Logo"
-								className="size-7"
-								height={512}
-								src="/logo.png"
-								width={512}
-							/>
-						</div>
-					</Link>
-				</div>
-			</WireframeSidebarHeader>
-
 			<WireframeSidebarContent className="p-3">
 				<nav className="flex flex-col gap-1">
 					<ItemGroup>
+						<Item
+							className={cn(
+								"hover:bg-muted",
+								pathname === "/" && "bg-muted font-medium"
+							)}
+							render={<Link href="/" />}
+							size="sm"
+						>
+							<ItemMedia variant="icon">
+								<HomeIcon
+									className={cn(
+										"size-4",
+										pathname === "/"
+											? "text-foreground"
+											: "text-muted-foreground"
+									)}
+								/>
+							</ItemMedia>
+							<span
+								className={cn(
+									"text-sm",
+									pathname === "/" ? "text-foreground" : "text-muted-foreground"
+								)}
+							>
+								Home
+							</span>
+						</Item>
+
 						<Item
 							className={cn("hover:bg-muted", inBlog && "bg-muted font-medium")}
 							render={<Link href="/blog" />}
@@ -109,7 +110,7 @@ export function AppSidebar() {
 							</span>
 						</Item>
 
-						<Item
+						{/* <Item
 							className={cn(
 								"hover:bg-muted",
 								inForms && "bg-muted font-medium"
@@ -133,7 +134,7 @@ export function AppSidebar() {
 							>
 								Forms
 							</span>
-						</Item>
+						</Item> */}
 
 						{inForms &&
 							FORMS_NAV.map((route) => {
@@ -231,47 +232,6 @@ export function AppSidebar() {
 			</WireframeSidebarContent>
 
 			<WireframeSidebarFooter className="p-3">
-				<a
-					className="flex items-center gap-2 rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
-					href="https://github.com/diegoramoz"
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					<SiGithub className="size-4 shrink-0" />
-					<span>GitHub</span>
-				</a>
-				<a
-					className="flex items-center gap-2 rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
-					href="https://youtube.com/@diegoramozdev"
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					<SiYoutube className="size-4 shrink-0" />
-					<span>YouTube</span>
-				</a>
-				<a
-					className="flex items-center gap-2 rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
-					href="https://x.com/zdiegoramos"
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					<SiX className="size-4 shrink-0" />
-					<span>X</span>
-				</a>
-				<a
-					className="flex items-center gap-2 rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
-					href={"https://linkedin.com/in/ramoz"}
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					<span>LinkedIn</span>
-				</a>
-				<a
-					className="flex items-center gap-2 rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
-					href="mailto:diego@ramoz.dev"
-				>
-					<span>Email</span>
-				</a>
 				<ThemeToggle />
 			</WireframeSidebarFooter>
 		</WireframeSidebar>

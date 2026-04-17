@@ -3,6 +3,7 @@ import "@/index.css";
 import { Wireframe } from "@oss/ui/components/wireframe";
 import { cn } from "@oss/ui/lib/utils";
 import { AppSidebar } from "components/app-sidebar";
+import { AppTopNav } from "components/app-top-nav";
 import { generateMetadata } from "lib/seo";
 import type { Metadata } from "next";
 import Providers from "providers";
@@ -37,7 +38,12 @@ export default function RootLayout({
 		>
 			<body className="overscroll-none">
 				<Providers>
-					<Wireframe>
+					<Wireframe
+						config={{
+							corners: { topLeft: "navbar", topRight: "navbar" },
+						}}
+					>
+						<AppTopNav />
 						<AppSidebar />
 						{children}
 					</Wireframe>
