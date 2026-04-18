@@ -1,9 +1,8 @@
-# OSS
+# Niwa 庭
 
 I built this to demonstrate how I approach full-stack engineering as a startup generalist, from database schema design to infrastructure to UI. Every decision here reflects how I'd build a production-grade full-stack application: end-to-end type safety, secure infrastructure, and clean separation of concerns across a monorepo.
 
 - [finance.zdiego.com](https://finance.zdiego.com) — AI-powered invoice scanner and expense dashboard
-- [oss.zdiego.com](https://oss.zdiego.com) — component showcase
 
 ---
 
@@ -18,7 +17,7 @@ This setup achieves private inference because the LLM runs on a local machine, w
 
 **What's next:** The extraction performance can be improved with image compression (reduce payload size), and better PDF processing strategies. The economics only make sense at high volume, thousands of invoices per day, and that's exactly the target use case I'm validating.
 
-### `web` — [oss.zdiego.com](https://oss.zdiego.com)
+### `web` — [ramoz.dev](https://ramoz.dev)
 A frontend component showcase. I open-source the components I've built and refined across projects — starting with things like the `Wireframe` layout component. This app is intentionally frontend-only: no backend, just patterns and primitives worth sharing.
 
 ![Web app demo](apps/web/public/wireframe.gif)

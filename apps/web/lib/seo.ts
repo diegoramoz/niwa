@@ -1,7 +1,7 @@
 import { createSeoConfig } from "@oss/seo";
 
 export const { generateMetadata, generateOgImage } = createSeoConfig({
-	baseUrl: "https://oss.zdiego.com",
+	baseUrl: "https://ramoz.dev",
 	primaryColor: "#6366f1",
-	siteName: "OSS",
+	siteName: "Ramoz",
 });
