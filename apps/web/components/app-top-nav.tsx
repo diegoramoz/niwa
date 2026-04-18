@@ -1,5 +1,5 @@
 import { WireframeNav } from "@oss/ui/components/wireframe";
-import Image from "next/image";
+import { LogoSphere } from "./logo-sphere";
 
 export function AppTopNav() {
 	return (
@@ -9,13 +9,7 @@ export function AppTopNav() {
 			position="top"
 		>
 			<div className="flex items-center gap-3">
-				<Image
-					alt="Logo"
-					className="size-7"
-					height={512}
-					src="/logo.png"
-					width={512}
-				/>
+				<LogoSphere />
 				<div>
 					<div className="font-bold text-sm">Diego Ramos</div>
 					<div className="font-medium text-muted-foreground text-xs">
