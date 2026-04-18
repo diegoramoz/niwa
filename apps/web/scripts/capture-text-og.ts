@@ -27,6 +27,10 @@ async function main() {
 	await page.goto(URL, { waitUntil: "networkidle" });
 	// Wait for the fixed canvas overlay to mount and Three.js to initialise
 	await page.waitForSelector("canvas");
+	// Hide the Next.js dev indicator
+	await page.addStyleTag({
+		content: "nextjs-portal { display: none !important; }",
+	});
 	await page.waitForTimeout(2500);
 
 	type OgWin = { __ogCapture?: boolean; __setOgRotation?: (n: number) => void };
