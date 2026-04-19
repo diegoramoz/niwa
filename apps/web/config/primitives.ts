@@ -46,7 +46,8 @@ export const PRIMITIVES_NAV = [
 	},
 	{
 		name: "Currency Input",
-		description: "Numeric field that formats values as US dollar amounts.",
+		description:
+			"Numeric field that formats and displays values as US dollar amounts on blur.",
 		href: "/primitives/currency-input",
 		icon: DollarSignIcon,
 		activePatterns: [
@@ -81,7 +82,7 @@ export const PRIMITIVES_NAV = [
 	{
 		name: "Decimal Input",
 		description:
-			"Numeric field that formats values with two decimal places (e.g. quantities).",
+			"Numeric field that formats values with two decimal places on blur (e.g. quantities).",
 		href: "/primitives/decimal-input",
 		icon: HashIcon,
 		activePatterns: [

@@ -4,12 +4,12 @@ import { Form, useAppForm } from "@oss/ui/components/form";
 import { z } from "zod/v4";
 
 const schema = z.object({
-	value: z.string().meta({ label: "Amount", placeholder: "$0.00" }),
+	value: z.number().meta({ label: "Amount", placeholder: "$0.00" }),
 });
 
 export function CurrencyInputDemo() {
 	const form = useAppForm({
-		defaultValues: { value: "" },
+		defaultValues: { value: null as number | null },
 		validators: { onChange: schema },
 		onSubmit: async () => {
 			// demo only — no submission action
@@ -26,10 +26,9 @@ export function CurrencyInputDemo() {
 		>
 			<form.AppField name="value">
 				{(field) => (
-					<field.CurrencyInput
-						maxCharCount={10}
-						maxValueCents={999_999_999}
-						minValueCents={1}
+					<field.NumberInput
+						format={{ style: "currency", currency: "USD" }}
+						min={0}
 						schema={schema.shape.value}
 					/>
 				)}

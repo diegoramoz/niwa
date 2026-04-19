@@ -4,12 +4,12 @@ import { Form, useAppForm } from "@oss/ui/components/form";
 import { z } from "zod/v4";
 
 const schema = z.object({
-	value: z.string().meta({ label: "Quantity", placeholder: "0.00" }),
+	value: z.number().meta({ label: "Quantity", placeholder: "0.00" }),
 });
 
 export function DecimalInputDemo() {
 	const form = useAppForm({
-		defaultValues: { value: "" },
+		defaultValues: { value: null as number | null },
 		validators: { onChange: schema },
 		onSubmit: async () => {
 			// demo only — no submission action
@@ -26,7 +26,14 @@ export function DecimalInputDemo() {
 		>
 			<form.AppField name="value">
 				{(field) => (
-					<field.DecimalInput maxCharCount={8} schema={schema.shape.value} />
+					<field.NumberInput
+						format={{
+							style: "decimal",
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2,
+						}}
+						schema={schema.shape.value}
+					/>
 				)}
 			</form.AppField>
 		</Form>

@@ -1,12 +1,11 @@
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { CardNumberInput } from "./card-number-input";
 import { ChoiceInput } from "./choice-input";
-import { CurrencyInput } from "./currency-input";
 import { CvvInput } from "./cvv-input";
 import { DateInput } from "./date-input";
 import { DateRangeInput } from "./date-range-input";
-import { DecimalInput } from "./decimal-input";
 import { FieldInfo } from "./field-info";
+import { NumberInput } from "./number-input";
 import { CountryCodeInput } from "./phone/country-code";
 import { PhoneNumberInput } from "./phone/phone-number";
 import { SelectInput } from "./select-input";
@@ -24,12 +23,11 @@ export const { useAppForm, withForm } = createFormHook({
 		CardNumberInput,
 		ChoiceInput,
 		CountryCodeInput,
-		CurrencyInput,
 		CvvInput,
 		DateInput,
 		DateRangeInput,
-		DecimalInput,
 		FieldInfo,
+		NumberInput,
 		PhoneNumberInput,
 		SelectInput,
 		TextAreaInput,
