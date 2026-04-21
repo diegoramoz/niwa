@@ -30,37 +30,37 @@ A React component system for building fixed/sticky navigation layouts with autom
 
 ## Experience
 
-### [Hazlo Ya](https://hazloya.app) - Senior Full-Stack Engineer, Oct 2025 - Present
-
-A B2B marketplace where businesses post jobs and pre-verified suppliers bid to deliver them. Clients compare quotes, check ratings, and award work in-app, while the platform's unified e-invoicing engine sets the national billing standard.
-
-Built with TypeScript, Next.js (with PWA support), Planetscale (MySQL), and deployed on Vercel.
-
 ### Gaias Labs - Senior Full-Stack Engineer, Mar 2024 - Oct 2025
 
-RACE is a game available on Base chain. Users play by depositing ETH for one of four hamsters before they race. The hamsters are AI agents that get better over time as they race. The races are the result of the execution of a smart contract function.
+Created a web video game with thousands of players with a pioneered solution to synchronize the blockchain with a MySQL database. The players’ stats and global leaderboards were updated in near real time. It also introduced an innovative way to execute complex financial transactions with a simple UI.
 
-**Frontend contributions**
+**Backend contributions**
 
-- Made RACE installable as a PWA and compatible with Farcaster, Base, and Telegram Mini Apps.
-- Detected a critical security vulnerability with Privy authentication in our frontend and patched it.
 - Created a referral system with which tens of thousands of users were referred.
+- Created a MySQL database with 57 tables using Drizzle ORM and deployed it to Planetscale.
+- Detected a critical security vulnerability with Privy authentication in our frontend and patched it.
+- Created 88 endpoints to handle financial transactions, serve user data, authenticate, perform user and admin actions, handle webhooks from third party services, and handle cron jobs.
+- Deployed a Linux server (Ubuntu) on DigitalOcean to manage Node.js workers and cron jobs.
+- Implemented parallel UserOps to execute financial transactions concurrently.
+- Created a job queue with BullMQ to update the players’ data in real time based on blockchain activity.
+- Created strongly typed tRPC endpoints that significantly reduced development time by providing thorough errors and automatically documenting all endpoints through type inference.
+- Created a token-based reward mechanism which aggregated user data weekly to determine reward size.
+- Created in-app currency exchange
 
 **Management contributions**
 
 - Conducted interviews to hire a frontend engineer and tutored two frontend engineers (Next.js, Typescript).
 - Provided design and engineering patterns, including the use of TailwindCSS and shadcn-ui to ensure a smooth development between all team members.
 
-**Backend contributions**
+**Frontend contributions**
 
-- Created a MySQL database with 57 tables using Drizzle ORM and deployed it to Planetscale.
-- Created 88 endpoints to handle transactions on Base, serve user data, authenticate, perform user and admin actions, handle webhooks from third party services, and handle cron jobs.
-- Deployed a Linux server (Ubuntu) on DigitalOcean to manage Node.js workers and cron jobs.
-- Implemented parallel UserOps to execute multiple transactions at a time.
-- Created a job queue with BullMQ to update the players' data in real time based on blockchain activity.
-- Created strongly typed tRPC endpoints that significantly reduced development time by providing thorough errors and automatically documenting all endpoints through type inference.
-- Created a point based, reward mechanism. Once a week the points could be redeemed as ERC-20 tokens.
-- Created in-app ERC-20-ETH swap using the 0x API. The transaction was bundled such that the approval and swap transactions for an ERC-20 happened with a single button press.
+- Made the app installable as a PWA and compatible with Farcaster, Base, and Telegram Mini Apps.
+
+### [Hazlo Ya](https://hazloya.app) - Senior Full-Stack Engineer, Oct 2025 - Present
+
+A B2B marketplace where businesses post jobs and pre-verified suppliers bid to deliver them. Clients compare quotes, check ratings, and award work in-app, while the platform's unified e-invoicing engine sets the national billing standard.
+
+Built with TypeScript, Next.js (with PWA support), Planetscale (MySQL), and deployed on Vercel.
 
 ### Momentum Labs - Full-Stack Engineer, Mar 2023 - Oct 2023
 

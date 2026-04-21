@@ -17,7 +17,7 @@ export default function Page() {
 				waveSpeed={0.05}
 			/>
 			<div
-				className={`${spaceMono.className} absolute inset-0 z-30 flex select-none items-center justify-center px-4 font-bold text-4xl text-white uppercase leading-relaxed lg:text-9xl`}
+				className={`${spaceMono.className} absolute inset-0 z-30 flex select-none items-center justify-center px-4 font-bold text-4xl text-white leading-relaxed lg:text-9xl`}
 			>
 				Diego Ramos
 			</div>

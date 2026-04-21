@@ -17,6 +17,12 @@ const links = [
 		icon: null,
 	},
 	{
+		label: "Resume",
+		href: "/resume.pdf",
+		external: true,
+		icon: null,
+	},
+	{
 		label: "YouTube",
 		href: "https://youtube.com/@diegoramozdev",
 		external: true,
