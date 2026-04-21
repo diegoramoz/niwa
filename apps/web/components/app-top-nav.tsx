@@ -12,15 +12,13 @@ export function AppTopNav() {
 				<LogoSphere />
 				<div>
 					<div className="font-bold text-sm">Diego Ramos</div>
-					<div className="font-medium text-muted-foreground text-xs">
-						Full-Stack Engineer
-					</div>
+					<div className="font-medium text-xs">Full-Stack Engineer</div>
 				</div>
 			</div>
 
 			<div className="flex items-center gap-1">
 				<a
-					className="rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
 					href="https://linkedin.com/in/ramoz"
 					rel="noopener noreferrer"
 					target="_blank"
@@ -28,7 +26,7 @@ export function AppTopNav() {
 					LinkedIn
 				</a>
 				<a
-					className="rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
 					href="/resume.pdf"
 					rel="noopener noreferrer"
 					target="_blank"
@@ -36,7 +34,7 @@ export function AppTopNav() {
 					Resume
 				</a>
 				<a
-					className="rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
 					href="https://youtube.com/@diegoramozdev"
 					rel="noopener noreferrer"
 					target="_blank"
@@ -44,7 +42,7 @@ export function AppTopNav() {
 					YouTube
 				</a>
 				<a
-					className="rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
 					href="https://x.com/zdiegoramos"
 					rel="noopener noreferrer"
 					target="_blank"
@@ -52,13 +50,13 @@ export function AppTopNav() {
 					X
 				</a>
 				<a
-					className="rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
 					href="mailto:diego@ramoz.dev"
 				>
 					Email
 				</a>
 				<a
-					className="rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
 					href="https://github.com/diegoramoz"
 					rel="noopener noreferrer"
 					target="_blank"

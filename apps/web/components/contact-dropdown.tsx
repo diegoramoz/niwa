@@ -1,38 +1,40 @@
 "use client";
 
+import { SiGithub, SiX, SiYoutube } from "@icons-pack/react-simple-icons";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@oss/ui/components/dropdown-menu";
-import { GithubIcon, MailIcon, TwitterIcon, YoutubeIcon } from "lucide-react";
+import { File, MailIcon } from "lucide-react";
 import type React from "react";
+import { FaLinkedin } from "react-icons/fa";
 
 const links = [
 	{
 		label: "LinkedIn",
 		href: "https://linkedin.com/in/ramoz",
 		external: true,
-		icon: null,
+		icon: FaLinkedin,
 	},
 	{
 		label: "Resume",
 		href: "/resume.pdf",
 		external: true,
-		icon: null,
+		icon: File,
 	},
 	{
 		label: "YouTube",
 		href: "https://youtube.com/@diegoramozdev",
 		external: true,
-		icon: YoutubeIcon,
+		icon: SiYoutube,
 	},
 	{
 		label: "X",
 		href: "https://x.com/zdiegoramos",
 		external: true,
-		icon: TwitterIcon,
+		icon: SiX,
 	},
 	{
 		label: "Email",
@@ -44,7 +46,7 @@ const links = [
 		label: "GitHub",
 		href: "https://github.com/diegoramoz",
 		external: true,
-		icon: GithubIcon,
+		icon: SiGithub,
 	},
 ];
 
