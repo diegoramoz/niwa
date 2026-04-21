@@ -6,7 +6,7 @@ export const contentType = OG_CONTENT_TYPE;
 
 export default function Image() {
 	return generateOgImage({
-		title: "OSS",
-		description: "Open source software, built in public.",
+		title: "Diego Ramos",
+		description: "Full-Stack Engineer.",
 	});
 }

@@ -13,8 +13,8 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = generateMetadata({
-	title: "OSS",
-	description: "Open source software, built in public.",
+	title: "Diego Ramos",
+	description: "Full-Stack Engineer.",
 });
 
 export default function RootLayout({

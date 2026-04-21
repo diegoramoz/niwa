@@ -3,7 +3,7 @@ import type { BrandConfig, PageInput } from "./types.js";
 
 export function buildMetadata(page: PageInput, brand: BrandConfig): Metadata {
 	const url = page.path ? `${brand.baseUrl}${page.path}` : brand.baseUrl;
-	const title = `${page.title} | ${brand.siteName}`;
+	const title = page.title;
 
 	return {
 		title,
