@@ -7,7 +7,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@oss/ui/components/dropdown-menu";
-import { File, MailIcon } from "lucide-react";
+import { MailIcon } from "lucide-react";
 import type React from "react";
 import { FaLinkedin } from "react-icons/fa";
 
@@ -17,12 +17,6 @@ const links = [
 		href: "https://linkedin.com/in/ramoz",
 		external: true,
 		icon: FaLinkedin,
-	},
-	{
-		label: "Resume",
-		href: "/resume.pdf",
-		external: true,
-		icon: File,
 	},
 	{
 		label: "YouTube",
