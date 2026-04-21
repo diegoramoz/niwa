@@ -32,6 +32,6 @@ export default function HomeLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<div className="mx-auto max-w-2xl px-[2lvw] py-8 md:px-0">{children}</div>
+		<div className="mx-auto max-w-2xl px-[4lvw] py-6 md:px-0">{children}</div>
 	);
 }
