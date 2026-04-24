@@ -12,9 +12,7 @@ Stack: Next.js, TypeScript, Postgres, Drizzle ORM, oRPC, Bun, Turborepo
 
 ### [AI Invoice Scanner](https://github.com/diegoramoz/oss) - April 2026
 
-A fully functional demo of an AI invoice scanner. Users submit their invoices on [finance.ramoz.dev](https://finance.ramoz.dev) and an [ollama](https://ollama.com) vision LLM extracts structured data from it. Turning pdfs/images into a queryable database.
-
-This setup achieves private inference because the LLM runs on a local machine, which is exposed to the internet using a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) + Zero Trust Access.
+A web app where to submit invoices as PDF or images and [ollama](https://ollama.com) LLM extracts structured data from it. Turning pdfs/images into a queryable Postgres database. The app works with private inference because the LLM runs on a local machine, which is exposed to the internet using a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) + Zero Trust Access.
 
 <a href="/finance.gif" rel="noopener" target="_blank">
   <Image alt="AI Invoice Scanner demo" className="rounded-md" height={450} loading="eager" src="/finance.gif" unoptimized width={800} />
