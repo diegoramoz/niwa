@@ -5,7 +5,7 @@ export function AppMobileTopNav() {
 	return (
 		<WireframeNav
 			className="flex items-center justify-between border-b bg-background px-4"
-			hide="desktop"
+			hideOn="desktop"
 			position="top"
 		>
 			<div className="flex items-center">

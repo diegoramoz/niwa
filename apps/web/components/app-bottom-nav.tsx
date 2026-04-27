@@ -15,7 +15,7 @@ export function AppBottomNav() {
 	return (
 		<WireframeNav
 			className="flex items-center justify-around border-t bg-background"
-			hide="desktop"
+			hideOn="desktop"
 			position="bottom"
 		>
 			<Link

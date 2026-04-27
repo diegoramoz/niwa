@@ -29,7 +29,7 @@ export function Sidebar({
 	return (
 		<WireframeSidebar
 			className="border-r bg-background"
-			hide="mobile"
+			hideOn="mobile"
 			position="left"
 		>
 			<WireframeSidebarHeader className="p-3">

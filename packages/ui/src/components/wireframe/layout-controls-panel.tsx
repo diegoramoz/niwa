@@ -4,7 +4,6 @@ import { Label } from "@oss/ui/components/label";
 import { CornerControl } from "@oss/ui/components/wireframe/corner-control";
 import { NavControl } from "@oss/ui/components/wireframe/nav-control";
 import { NavDiagramControl } from "@oss/ui/components/wireframe/nav-diagram-control";
-import { ResponsiveCornerControl } from "@oss/ui/components/wireframe/responsive-corner-control";
 import { SidebarControl } from "@oss/ui/components/wireframe/sidebar-control";
 import { SidebarDiagramControl } from "@oss/ui/components/wireframe/sidebar-diagram-control";
 import type { WireframeConfig } from "@oss/ui/components/wireframe/wireframe-config-provider";
@@ -62,52 +61,9 @@ function NavCornersSection({ config, updateCorner }: NavCornersSectionProps) {
 	);
 }
 
-type ResponsiveCornersSectionProps = {
-	config: WireframeConfig;
-	updateResponsiveCorner: ReturnType<
-		typeof useWireframeConfig
-	>["updateResponsiveCorner"];
-};
-
-function ResponsiveCornersSection({
-	config,
-	updateResponsiveCorner,
-}: ResponsiveCornersSectionProps) {
-	if ((config.showLeftSidebar || config.showRightSidebar) === false) {
-		return null;
-	}
-
-	return (
-		<div className="space-y-2">
-			<Label className="font-semibold text-sm">Responsive Nav Corners</Label>
-			<div className="grid grid-cols-2 gap-3">
-				{config.showLeftSidebar && (
-					<ResponsiveCornerControl
-						onSelect={(value) => updateResponsiveCorner("left", value)}
-						selected={config.corners.responsive.left}
-						side="left"
-					/>
-				)}
-				{config.showRightSidebar && (
-					<ResponsiveCornerControl
-						onSelect={(value) => updateResponsiveCorner("right", value)}
-						selected={config.corners.responsive.right}
-						side="right"
-					/>
-				)}
-			</div>
-		</div>
-	);
-}
-
 export function LayoutControlsPanel() {
-	const {
-		config,
-		updateConfig,
-		updateCSSVariable,
-		updateCorner,
-		updateResponsiveCorner,
-	} = useWireframeConfig();
+	const { config, updateConfig, updateCSSVariable, updateCorner } =
+		useWireframeConfig();
 
 	const vars = config.cssVariables;
 
@@ -149,12 +105,6 @@ export function LayoutControlsPanel() {
 						onToggle={() => updateConfig("navType", "sticky")}
 						type="sticky"
 					/>
-					<NavControl
-						enabled={config.navType === "responsive"}
-						label="Responsive"
-						onToggle={() => updateConfig("navType", "responsive")}
-						type="responsive"
-					/>
 				</div>
 			</div>
 
@@ -190,14 +140,6 @@ export function LayoutControlsPanel() {
 				<NavCornersSection config={config} updateCorner={updateCorner} />
 			)}
 
-			{/* Responsive Nav Corners */}
-			{config.navType === "responsive" && (
-				<ResponsiveCornersSection
-					config={config}
-					updateResponsiveCorner={updateResponsiveCorner}
-				/>
-			)}
-
 			{/* CSS Variable Diagrams */}
 			<div className="space-y-6">
 				{config.navType === "sticky" && (
@@ -214,41 +156,39 @@ export function LayoutControlsPanel() {
 					</div>
 				)}
 
-				{(config.navType === "normal" || config.navType === "responsive") &&
-					config.showTopNav && (
-						<div className="space-y-2">
-							<Label className="font-medium text-muted-foreground text-xs">
-								Top Nav
-							</Label>
-							<NavDiagramControl
-								bottomOffsetKey="--top-nav-bottom-offset"
-								cssVariables={vars}
-								heightKey="--top-nav-height"
-								leftOffsetKey="--top-nav-left-offset"
-								onUpdate={updateCSSVariable}
-								rightOffsetKey="--top-nav-right-offset"
-								topOffsetKey="--top-nav-top-offset"
-							/>
-						</div>
-					)}
+				{config.navType === "normal" && config.showTopNav && (
+					<div className="space-y-2">
+						<Label className="font-medium text-muted-foreground text-xs">
+							Top Nav
+						</Label>
+						<NavDiagramControl
+							bottomOffsetKey="--top-nav-bottom-offset"
+							cssVariables={vars}
+							heightKey="--top-nav-height"
+							leftOffsetKey="--top-nav-left-offset"
+							onUpdate={updateCSSVariable}
+							rightOffsetKey="--top-nav-right-offset"
+							topOffsetKey="--top-nav-top-offset"
+						/>
+					</div>
+				)}
 
-				{(config.navType === "normal" || config.navType === "responsive") &&
-					config.showBottomNav && (
-						<div className="space-y-2">
-							<Label className="font-medium text-muted-foreground text-xs">
-								Bottom Nav
-							</Label>
-							<NavDiagramControl
-								bottomOffsetKey="--bottom-nav-bottom-offset"
-								cssVariables={vars}
-								heightKey="--bottom-nav-height"
-								leftOffsetKey="--bottom-nav-left-offset"
-								onUpdate={updateCSSVariable}
-								rightOffsetKey="--bottom-nav-right-offset"
-								topOffsetKey="--bottom-nav-top-offset"
-							/>
-						</div>
-					)}
+				{config.navType === "normal" && config.showBottomNav && (
+					<div className="space-y-2">
+						<Label className="font-medium text-muted-foreground text-xs">
+							Bottom Nav
+						</Label>
+						<NavDiagramControl
+							bottomOffsetKey="--bottom-nav-bottom-offset"
+							cssVariables={vars}
+							heightKey="--bottom-nav-height"
+							leftOffsetKey="--bottom-nav-left-offset"
+							onUpdate={updateCSSVariable}
+							rightOffsetKey="--bottom-nav-right-offset"
+							topOffsetKey="--bottom-nav-top-offset"
+						/>
+					</div>
+				)}
 
 				{config.showLeftSidebar && (
 					<div className="space-y-2">

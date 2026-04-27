@@ -42,10 +42,6 @@ const defaults = {
 		topRight: "sidebar",
 		bottomLeft: "sidebar",
 		bottomRight: "sidebar",
-		responsive: {
-			left: "sidebar",
-			right: "sidebar",
-		},
 	},
 } as const satisfies WireframeConfig;
 
@@ -94,10 +90,6 @@ export type WireframeConfig = {
 		topRight: WireframeCornerOptions;
 		bottomLeft: WireframeCornerOptions;
 		bottomRight: WireframeCornerOptions;
-		responsive: {
-			left: WireframeCornerOptions;
-			right: WireframeCornerOptions;
-		};
 	};
 };
 
@@ -126,21 +118,12 @@ const defaultConfig: ClassValue[] = [
 	// HAS RIGHT SIDEBAR=COLLAPSED, ADD RIGHT MARGIN WIREFRAME CONTENT
 	"has-data-[wf-right-sidebar=collapsed]:mr-[calc(var(--right-sidebar-width-collapsed)+var(--right-sidebar-right-offset)+var(--right-sidebar-left-offset)+env(safe-area-inset-right))]",
 
-	// HAS RESPONSIVE NAV, AND VIEWPORT IS MOBILE, ADD BOTTOM MARGINS
-	"has-data-wf-responsive-nav:mb-[calc(var(--bottom-nav-height)+var(--bottom-nav-bottom-offset)+var(--bottom-nav-top-offset)+env(safe-area-inset-bottom))] mt-[env(safe-area-inset-top)]",
-	// HAS RESPONSIVE NAV, AND VIEWPORT IS DESKTOP, ADD TOP MARGINS
-	"min-wf-nav:has-data-wf-responsive-nav:mt-[calc(var(--top-nav-height)+var(--top-nav-top-offset)+var(--top-nav-bottom-offset)+env(safe-area-inset-top))] min-wf-nav:has-data-wf-responsive-nav:mb-[env(safe-area-inset-bottom)]",
-
 	// HAS TOP AND BOTTOM NAV, SET WIREFRAME CONTENT MIN HEIGHT
 	"has-data-wf-top-nav:has-data-wf-bottom-nav:min-h-[calc(100dvh-var(--top-nav-height)-var(--bottom-nav-height)-var(--top-nav-top-offset)-var(--bottom-nav-bottom-offset)-var(--top-nav-bottom-offset)-var(--bottom-nav-top-offset)-env(safe-area-inset-top)-env(safe-area-inset-bottom))]",
 	// HAS ONLY TOP NAV, SET WIREFRAME CONTENT MIN HEIGHT
 	"has-data-wf-top-nav:min-h-[calc(100dvh-var(--top-nav-height)-var(--top-nav-top-offset)-var(--top-nav-bottom-offset)-env(safe-area-inset-top))]",
 	// HAS ONLY BOTTOM NAV, SET WIREFRAME CONTENT MIN HEIGHT
 	"has-data-wf-bottom-nav:min-h-[calc(100dvh-var(--bottom-nav-height)-var(--bottom-nav-bottom-offset)-var(--bottom-nav-top-offset)-env(safe-area-inset-bottom))]",
-	// HAS RESPONSIVE NAV, AND VIEWPORT IS MOBILE, SET WIREFRAME CONTENT MIN HEIGHT
-	"has-data-wf-responsive-nav:min-h-[calc(100dvh-var(--bottom-nav-height)-var(--bottom-nav-bottom-offset)-var(--bottom-nav-top-offset)-env(safe-area-inset-bottom)-env(safe-area-inset-top))]",
-	// HAS RESPONSIVE NAV, AND VIEWPORT IS DESKTOP, SET WIREFRAME CONTENT MIN HEIGHT
-	"min-wf-nav:has-data-wf-responsive-nav:min-h-[calc(100dvh-var(--top-nav-height)-var(--top-nav-top-offset)-var(--top-nav-bottom-offset)-env(safe-area-inset-top)-env(safe-area-inset-bottom))]",
 
 	// MAKE THE WIREFRAME ROOT RELATIVE TO ALLOW CHILDREN TO BE ABSOLUTE POSITIONED IF NEEDED
 	"relative",
@@ -183,37 +166,6 @@ const wireframeCssVariables = [
 ] as const;
 
 export type WireframeCSSVariables = (typeof wireframeCssVariables)[number];
-
-const responsiveCornersConfig = {
-	navbar: {
-		left: [
-			// HAS RESPONSIVE NAV AND LEFT SIDEBAR AND VIEWPORT IS MOBILE, ADD BOTTOM MARGIN TO LEFT SIDEBAR
-			"has-data-wf-responsive-nav:has-data-wf-left-sidebar:**:data-wf-left-sidebar:mb-(--bottom-nav-height)",
-			// HAS RESPONSIVE NAV AND LEFT SIDEBAR AND VIEWPORT IS DESKTOP, ADD TOP MARGIN TO LEFT SIDEBAR
-			"min-wf-nav:has-data-wf-responsive-nav:has-data-wf-left-sidebar:**:data-wf-left-sidebar:mt-(--top-nav-height) min-wf-nav:has-data-wf-responsive-nav:has-data-wf-left-sidebar:**:data-wf-left-sidebar:mb-0",
-		],
-		right: [
-			// HAS RESPONSIVE NAV AND RIGHT SIDEBAR AND VIEWPORT IS MOBILE, ADD BOTTOM MARGIN TO RIGHT SIDEBAR
-			"has-data-wf-responsive-nav:has-data-wf-right-sidebar:**:data-wf-right-sidebar:mb-(--bottom-nav-height)",
-			// HAS RESPONSIVE NAV AND RIGHT SIDEBAR AND VIEWPORT IS DESKTOP, ADD TOP MARGIN TO RIGHT SIDEBAR
-			"min-wf-nav:has-data-wf-responsive-nav:has-data-wf-right-sidebar:**:data-wf-right-sidebar:mt-(--top-nav-height) min-wf-nav:has-data-wf-responsive-nav:has-data-wf-right-sidebar:**:data-wf-right-sidebar:mb-0",
-		],
-	},
-	sidebar: {
-		left: [
-			// HAS RESPONSIVE NAV AND LEFT SIDEBAR=EXPANDED, ADD LEFT MARGIN WIREFRAME RESPONSIVE NAV
-			"has-data-wf-responsive-nav:has-data-[wf-left-sidebar=expanded]:**:data-wf-responsive-nav:ml-[calc(var(--left-sidebar-width-expanded)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset))]",
-			// HAS RESPONSIVE NAV AND LEFT SIDEBAR=COLLAPSED, ADD LEFT MARGIN WIREFRAME RESPONSIVE NAV
-			"has-data-wf-responsive-nav:has-data-[wf-left-sidebar=collapsed]:**:data-wf-responsive-nav:ml-[calc(var(--left-sidebar-width-collapsed)+var(--left-sidebar-left-offset)+var(--left-sidebar-right-offset))]",
-		],
-		right: [
-			// HAS RESPONSIVE NAV AND RIGHT SIDEBAR=EXPANDED, ADD RIGHT MARGIN WIREFRAME RESPONSIVE NAV
-			"has-data-wf-responsive-nav:has-data-[wf-right-sidebar=expanded]:**:data-wf-responsive-nav:mr-[calc(var(--right-sidebar-width-expanded)+var(--right-sidebar-right-offset)+var(--right-sidebar-left-offset))]",
-			// HAS RESPONSIVE NAV AND RIGHT SIDEBAR=COLLAPSED, ADD RIGHT MARGIN WIREFRAME RESPONSIVE NAV
-			"has-data-wf-responsive-nav:has-data-[wf-right-sidebar=collapsed]:**:data-wf-responsive-nav:mr-[calc(var(--right-sidebar-width-collapsed)+var(--right-sidebar-right-offset)+var(--right-sidebar-left-offset))]",
-		],
-	},
-} as const;
 
 const cornersConfig = {
 	navbar: {
@@ -355,10 +307,6 @@ function Wireframe({
 	const corners = {
 		...defaults.corners,
 		...config?.corners,
-		responsive: {
-			...defaults.corners.responsive,
-			...config?.corners?.responsive,
-		},
 	};
 
 	return (
@@ -369,8 +317,6 @@ function Wireframe({
 				cornersConfig[corners.topRight].topRight,
 				cornersConfig[corners.bottomLeft].bottomLeft,
 				cornersConfig[corners.bottomRight].bottomRight,
-				responsiveCornersConfig[corners.responsive.left].left,
-				responsiveCornersConfig[corners.responsive.right].right,
 				className
 			)}
 			style={
@@ -497,43 +443,18 @@ function WireframeNav({
 	className,
 	children,
 	position = "top",
-	hide,
+	hideOn,
 	...props
 }: React.ComponentProps<"div"> & {
-	position?: "top" | "bottom" | "responsive";
-	hide?: "mobile" | "desktop";
+	position?: "top" | "bottom";
+	hideOn?: "mobile" | "desktop";
 }) {
 	const { isMobile } = useWireframe();
-	if (hide === "mobile" && isMobile) {
+	if (hideOn === "mobile" && isMobile) {
 		return null;
 	}
-	if (hide === "desktop" && !isMobile) {
+	if (hideOn === "desktop" && !isMobile) {
 		return null;
-	}
-	if (position === "responsive") {
-		return (
-			<div
-				className={cn(
-					"fixed z-50",
-					// FOR MOBILE VIEWPORTS
-					"right-[calc(var(--bottom-nav-right-offset)+env(safe-area-inset-right))]",
-					"bottom-[calc(var(--bottom-nav-bottom-offset)+env(safe-area-inset-bottom))]",
-					"left-[calc(var(--bottom-nav-left-offset)+env(safe-area-inset-left))]",
-					"h-(--bottom-nav-height)",
-					// FOR DESKTOP VIEWPORTS
-					"min-wf-nav:top-[calc(var(--top-nav-top-offset)+env(safe-area-inset-top))]",
-					"min-wf-nav:right-[calc(var(--top-nav-right-offset)+env(safe-area-inset-right))]",
-					"min-wf-nav:left-[calc(var(--top-nav-left-offset)+env(safe-area-inset-left))]",
-					"min-wf-nav:h-(--top-nav-height)",
-					"min-wf-nav:bottom-auto",
-					className
-				)}
-				data-wf-responsive-nav
-				{...props}
-			>
-				{children}
-			</div>
-		);
 	}
 
 	return (
@@ -639,18 +560,18 @@ function WireframeSidebar({
 	children,
 	collapsed = false,
 	position = "left",
-	hide,
+	hideOn,
 	...props
 }: React.ComponentProps<"div"> & {
 	collapsed?: boolean;
 	position?: WireframeSidebarPosition;
-	hide?: "mobile" | "desktop";
+	hideOn?: "mobile" | "desktop";
 }) {
 	const { isMobile } = useWireframe();
-	if (hide === "mobile" && isMobile) {
+	if (hideOn === "mobile" && isMobile) {
 		return null;
 	}
-	if (hide === "desktop" && !isMobile) {
+	if (hideOn === "desktop" && !isMobile) {
 		return null;
 	}
 	return (

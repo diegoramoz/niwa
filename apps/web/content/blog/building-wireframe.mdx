@@ -193,11 +193,11 @@ corners: {
 Sometimes you want completely different navigation components for mobile and desktop rather than a responsive one. The `hide` prop handles this:
 
 ```tsx
-<WireframeNav position="top" hide="mobile">
+<WireframeNav position="top" hideOn="mobile">
   {/* Only rendered on desktop */}
 </WireframeNav>
 
-<WireframeNav position="bottom" hide="desktop">
+<WireframeNav position="bottom" hideOn="desktop">
   {/* Only rendered on mobile */}
 </WireframeNav>
 ```

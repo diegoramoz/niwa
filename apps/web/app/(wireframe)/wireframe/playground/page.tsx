@@ -51,7 +51,7 @@ function PlaygroundContent() {
 			<div className="fixed right-[calc(1.5rem+env(safe-area-inset-right))] bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-1000">
 				<Link
 					aria-label="View on GitHub"
-					className="inline-flex size-12 items-center justify-center rounded-full bg-white text-black shadow hover:bg-neutral-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-600"
+					className="inline-flex size-12 items-center justify-center rounded-full bg-background text-black shadow hover:bg-neutral-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-600"
 					href="https://github.com/diegoramoz/oss"
 					rel="noopener noreferrer"
 					target="_blank"

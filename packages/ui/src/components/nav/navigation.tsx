@@ -17,17 +17,17 @@ export function Navigation({
 	return (
 		<>
 			{/* Mobile: Top nav with logo only */}
-			<WireframeNav hide="desktop" position="top">
+			<WireframeNav hideOn="desktop" position="top">
 				<MobileTopNav />
 			</WireframeNav>
 
 			{/* Mobile: Bottom nav with icons and user menu */}
-			<WireframeNav hide="desktop" position="bottom">
+			<WireframeNav hideOn="desktop" position="bottom">
 				<MobileBottomNav routes={routes} userMenuProps={userMenuProps} />
 			</WireframeNav>
 
 			{/* Desktop: Top nav with full navbar */}
-			<WireframeNav hide="mobile" position="top">
+			<WireframeNav hideOn="mobile" position="top">
 				<DesktopNavbar routes={routes} userMenuProps={userMenuProps} />
 			</WireframeNav>
 		</>

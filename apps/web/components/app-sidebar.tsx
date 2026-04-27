@@ -53,7 +53,7 @@ export function AppSidebar() {
 	return (
 		<WireframeSidebar
 			className="border-r bg-background"
-			hide="mobile"
+			hideOn="mobile"
 			position="left"
 		>
 			<WireframeSidebarContent className="p-3">

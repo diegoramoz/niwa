@@ -4,7 +4,7 @@ import type { WireframeCSSVariables } from "@oss/ui/components/wireframe";
 import type React from "react";
 import { createContext, useContext, useState } from "react";
 
-type NavType = "normal" | "sticky" | "responsive";
+type NavType = "normal" | "sticky";
 export type WireframeCornerOptions = "navbar" | "sidebar";
 
 export type WireframeConfig = {
@@ -18,10 +18,6 @@ export type WireframeConfig = {
 		topRight: WireframeCornerOptions;
 		bottomLeft: WireframeCornerOptions;
 		bottomRight: WireframeCornerOptions;
-		responsive: {
-			left: WireframeCornerOptions;
-			right: WireframeCornerOptions;
-		};
 	};
 	cssVariables: Partial<Record<WireframeCSSVariables, number>>;
 };
@@ -35,10 +31,6 @@ type WireframeConfigContextType = {
 	updateCSSVariable: (key: WireframeCSSVariables, value: number) => void;
 	updateCorner: (
 		corner: keyof WireframeConfig["corners"],
-		value: WireframeCornerOptions
-	) => void;
-	updateResponsiveCorner: (
-		corner: keyof WireframeConfig["corners"]["responsive"],
 		value: WireframeCornerOptions
 	) => void;
 };
@@ -101,10 +93,6 @@ export function WireframeConfigProvider({
 			topRight: "sidebar",
 			bottomLeft: "sidebar",
 			bottomRight: "sidebar",
-			responsive: {
-				left: "sidebar",
-				right: "sidebar",
-			},
 		},
 		cssVariables: defaultCSSVariables,
 	});
@@ -139,22 +127,6 @@ export function WireframeConfigProvider({
 		}));
 	};
 
-	const updateResponsiveCorner = (
-		corner: keyof WireframeConfig["corners"]["responsive"],
-		value: WireframeCornerOptions
-	) => {
-		setConfig((prev) => ({
-			...prev,
-			corners: {
-				...prev.corners,
-				responsive: {
-					...prev.corners.responsive,
-					[corner]: value,
-				},
-			},
-		}));
-	};
-
 	return (
 		<WireframeConfigContext.Provider
 			value={{
@@ -162,7 +134,6 @@ export function WireframeConfigProvider({
 				updateConfig,
 				updateCSSVariable,
 				updateCorner,
-				updateResponsiveCorner,
 			}}
 		>
 			{children}

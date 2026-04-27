@@ -22,21 +22,6 @@ export function CodePreview() {
 			.filter((corner) => corner.value !== "sidebar")
 			.map((corner) => `      ${corner.key}: "${corner.value}"`);
 
-		const responsiveCorners = [
-			{ key: "left", value: config.corners.responsive.left },
-			{ key: "right", value: config.corners.responsive.right },
-		];
-
-		const responsiveEntries = responsiveCorners
-			.filter((corner) => corner.value !== "sidebar")
-			.map((corner) => `        ${corner.key}: "${corner.value}"`);
-
-		if (responsiveEntries.length > 0) {
-			cornerEntries.push(
-				`      responsive: {\n${responsiveEntries.join(",\n")}\n      }`
-			);
-		}
-
 		return cornerEntries.length > 0
 			? `    corners: {\n${cornerEntries.join(",\n")}\n    },\n`
 			: "";
@@ -76,8 +61,6 @@ export function CodePreview() {
 				);
 			}
 			navSegment = navParts.join("\n  ");
-		} else if (config.navType === "responsive") {
-			navSegment = `<WireframeNav position="responsive">\n    {/* children */}\n  </WireframeNav>`;
 		} else {
 			navSegment =
 				"<WireframeStickyNav>\n     {/* children */}\n  </WireframeStickyNav>";

@@ -121,16 +121,6 @@ export function ConfigurableWireframe({
 				</WireframeStickyNav>
 			)}
 
-			{config.navType === "responsive" && (
-				<WireframeNav position="responsive">
-					<div className="flex h-full items-center justify-center bg-yellow-200 px-4 dark:bg-yellow-900">
-						<ComponentName
-							code={'<WireframeNav position="responsive" />'}
-							title="Responsive Navigation"
-						/>
-					</div>
-				</WireframeNav>
-			)}
 			{config.showLeftSidebar && (
 				<DemoSidebar
 					collapsed={leftSidebarCollapsed}
