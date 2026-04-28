@@ -35,7 +35,7 @@ export function AppTopNav() {
 				</a>
 				<a
 					className="rounded-md px-3 py-2 transition-colors hover:bg-muted"
-					href="https://youtube.com/@diegoramozdev"
+					href="https://www.youtube.com/watch?v=x70d_rH55J8"
 					rel="noopener noreferrer"
 					target="_blank"
 				>
