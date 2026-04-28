@@ -1,6 +1,6 @@
 ---
 name: github-triage
-description: Triage GitHub issues through a label-based state machine with interactive grilling sessions. Use when user wants to triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow.
+description: Triage GitHub issues through a label-based state machine. Use when user wants to create an issue, triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow.
 ---
 
 # GitHub Issue Triage
@@ -82,7 +82,7 @@ Before presenting anything to the maintainer:
 
 - Read the full issue: body, all comments, all labels, who reported it, when
 - If there are prior triage notes comments (from previous sessions), parse them to understand what has already been established
-- Explore the codebase to build context — understand the domain, relevant interfaces, and existing behavior related to the issue
+- Explore the codebase to build context — understand the domain, relevant interfaces, and existing behavior related to the issue. Before exploring, follow [../grill-with-docs/DOMAIN-AWARENESS.md](../grill-with-docs/DOMAIN-AWARENESS.md).
 - Read `.out-of-scope/*.md` files and check if this issue matches or is similar to a previously rejected concept
 
 ### Step 2: Present a recommendation
@@ -97,13 +97,13 @@ Tell the maintainer:
 Then wait for the maintainer's direction. They may:
 
 - Agree and ask you to apply labels → do it
-- Want to flesh it out → start a grilling session
+- Want to flesh it out → start a /grill-with-docs session
 - Override with a different state → apply their choice
 - Want to discuss → have a conversation
 
 ### Step 3: Bug reproduction (bugs only)
 
-If the issue is categorized as a bug, attempt to reproduce it before starting a grilling session. This will vary by codebase, but do your best:
+If the issue is categorized as a bug, attempt to reproduce it before starting a /grill-with-docs session. This will vary by codebase, but do your best:
 
 - Read the reporter's reproduction steps (if provided)
 - Explore the codebase to understand the relevant code paths
@@ -112,11 +112,11 @@ If the issue is categorized as a bug, attempt to reproduce it before starting a 
 - If reproduction fails, report that too — the bug may be environment-specific, already fixed, or the report may be inaccurate
 - If the report lacks enough detail to attempt reproduction, note that — this is a strong signal the issue should move to `needs-info`
 
-The reproduction attempt informs the grilling session and the agent brief. A confirmed reproduction with a known code path makes for a much stronger brief.
+The reproduction attempt informs the /grill-with-docs session and the agent brief. A confirmed reproduction with a known code path makes for a much stronger brief.
 
-### Step 4: Grilling session (if needed)
+### Step 4: /grill-with-docs session (if needed)
 
-If the issue needs to be fleshed out before it's ready for an agent, interview the maintainer to build a complete specification.
+If the issue needs to be fleshed out before it's ready for an agent, interview the maintainer to build a complete specification. Use the /grill-with-docs skill.
 
 ### Step 5: Apply the outcome
 
@@ -133,13 +133,13 @@ Depending on the outcome:
 
 When the maintainer explicitly tells you to move an issue to a specific state (e.g. "move #42 to ready-for-agent"), trust their judgment and apply the label directly.
 
-Still show a confirmation of what you're about to do: which labels will be added/removed, and whether you'll post a comment or close the issue. But skip the grilling session entirely.
+Still show a confirmation of what you're about to do: which labels will be added/removed, and whether you'll post a comment or close the issue. But skip the /grill-with-docs session entirely.
 
-If moving to `ready-for-agent` without a grilling session, ask the maintainer if they want to write a brief agent brief comment or skip it.
+If moving to `ready-for-agent` without a /grill-with-docs session, ask the maintainer if they want to write a brief agent brief comment or skip it.
 
 ## Needs Info Output
 
-When moving an issue to `needs-info`, post a comment that captures the grilling progress and tells the reporter what's needed:
+When moving an issue to `needs-info`, post a comment that captures the interview progress and tells the reporter what's needed:
 
 ```markdown
 ## Triage Notes
@@ -155,7 +155,7 @@ When moving an issue to `needs-info`, post a comment that captures the grilling 
 - question 2
 ```
 
-Include everything resolved during the grilling session in "established so far" — this work should not be lost. The questions for the reporter should be specific and actionable, not vague ("please provide more info").
+Include everything resolved during the /grill-with-docs session in "established so far" — this work should not be lost. The questions for the reporter should be specific and actionable, not vague ("please provide more info").
 
 ## Resuming Previous Sessions
 
@@ -165,4 +165,4 @@ When triaging an issue that already has triage notes from a previous session:
 2. Parse what was already established
 3. Check if the reporter has answered any outstanding questions
 4. Present the maintainer with an updated picture: "Here's where we left off, and here's what the reporter has said since"
-5. Continue the grilling from where it stopped — do not re-ask resolved questions
+5. Continue the /grill-with-docs session from where it stopped — do not re-ask resolved questions
