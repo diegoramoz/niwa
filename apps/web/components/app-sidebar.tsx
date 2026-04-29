@@ -17,6 +17,7 @@ import {
 	// LayoutGrid,
 	// MoonIcon,
 	// SunIcon,
+	SparklesIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,7 @@ export function AppSidebar() {
 
 	const inBlog = isRouteActive(pathname, ["/blog", "/blog/*"]);
 	const inForms = isRouteActive(pathname, ["/forms", "/forms/*"]);
+	const inSkills = isRouteActive(pathname, ["/skills", "/skills/*"]);
 	// const inPrimitives = isRouteActive(pathname, [
 	// 	"/primitives",
 	// 	"/primitives/*",
@@ -82,6 +84,20 @@ export function AppSidebar() {
 								<BookOpenIcon className="size-4" />
 							</ItemMedia>
 							<span>Blog</span>
+						</Item>
+
+						<Item
+							className={cn(
+								"hover:bg-muted",
+								inSkills && "bg-muted font-medium"
+							)}
+							render={<Link href="/skills" />}
+							size="sm"
+						>
+							<ItemMedia variant="icon">
+								<SparklesIcon className="size-4" />
+							</ItemMedia>
+							<span>Skills</span>
 						</Item>
 
 						{/* <Item

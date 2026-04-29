@@ -37,6 +37,12 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "fa321b864bb240583ea5e20fd4e937216dd60ece6813d2ea02682ed75cf586c5"
     },
+    "name-it": {
+      "source": "diegoramoz/skills",
+      "sourceType": "github",
+      "skillPath": "name-it/SKILL.md",
+      "computedHash": "068a60ce9a8f40d5152001471c7dcb7fde4b83046e367712a2df03a1a297ec4f"
+    },
     "tdd": {
       "source": "mattpocock/skills",
       "sourceType": "github",

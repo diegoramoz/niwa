@@ -1,0 +1,40 @@
+import Link from "next/link";
+
+<Link className="text-muted-foreground text-sm hover:text-foreground not-prose mb-2 inline-block" href="/skills">
+  ← Skills
+</Link>
+
+# name-it
+
+Generate novel, easy-to-pronounce names for products, companies, brands,
+tools, or projects through a conversational linguistic search.
+
+## What it does
+
+The skill interviews you one question at a time to uncover the essence
+of what you're naming — the feeling it should evoke, how abstract
+or descriptive it should be, syllable constraints, and language
+preferences.
+
+It then runs parallel linguistic searches across world languages to find
+esoteric words and unconventional expressions that capture your intent.
+Results include the name, pronunciation, language origin, and the
+feeling it conveys.
+
+## Install
+
+```bash
+bunx skills@latest add diegoramoz/skills name-it
+```
+
+[View source on GitHub](https://github.com/diegoramoz/skills/blob/main/name-it/SKILL.md)
+
+## Usage
+
+Invoke the skill with a prompt:
+
+```bash
+/name-it I need a name for my new eco-friendly water bottle brand
+```
+
+The agent will ask you follow-up questions to gather more context, then return a list of naming options based on your preferences.
