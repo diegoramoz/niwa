@@ -1,6 +1,6 @@
 # 06 - Verified interaction gate with haiku fulfillment
 
-Status: needs-triage
+Status: closed
 
 ## What to build
 
@@ -8,10 +8,10 @@ Deliver the end-to-end interaction step where the server agent refuses fulfillme
 
 ## Acceptance criteria
 
-- [ ] The interaction path shows a blocked state when identity verification has not completed
-- [ ] DID exchange, challenge validation, and VC verification are executed in the app-based flow
-- [ ] The server agent fulfills the request only after successful verification
-- [ ] The guided UI clearly shows both blocked and successful outcomes
+- [x] The interaction path shows a blocked state when identity verification has not completed
+- [x] DID exchange, challenge validation, and VC verification are executed in the app-based flow
+- [x] The server agent fulfills the request only after successful verification
+- [x] The guided UI clearly shows both blocked and successful outcomes
 
 ## Blocked by
 

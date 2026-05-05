@@ -10,6 +10,8 @@ export type DemoSession = {
 	serverOwner: Owner | null;
 	serverAgent: Agent | null;
 	serverOwnershipVC: OwnershipCredentialResult | null;
+	identityVerified: boolean;
+	verificationLog: string[];
 	createdAt: Date;
 };
 
@@ -29,6 +31,8 @@ export function getSession(id = DEFAULT_SESSION_ID): DemoSession {
 			serverOwner: null,
 			serverAgent: null,
 			serverOwnershipVC: null,
+			identityVerified: false,
+			verificationLog: [],
 			createdAt: new Date(),
 		};
 		sessions.set(id, session);
@@ -70,6 +74,15 @@ export function setServerOwnershipVC(
 ): void {
 	const session = getSession(id);
 	session.serverOwnershipVC = vc;
+}
+
+export function setIdentityVerified(
+	log: string[],
+	id = DEFAULT_SESSION_ID
+): void {
+	const session = getSession(id);
+	session.identityVerified = true;
+	session.verificationLog = log;
 }
 
 export function resetSession(id = DEFAULT_SESSION_ID): void {
