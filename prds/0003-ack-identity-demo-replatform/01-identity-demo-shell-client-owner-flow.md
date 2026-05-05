@@ -1,6 +1,6 @@
 # 01 - Identity demo shell with client owner flow
 
-Status: needs-triage
+Status: closed
 
 ## What to build
 
@@ -8,10 +8,10 @@ Create a dedicated `apps/identity-demo` Next app scaffold with app-router and ap
 
 ## Acceptance criteria
 
-- [ ] `apps/identity-demo` runs with the same monorepo workflow as existing apps (`dev`, `build`, `start`)
-- [ ] Env bootstrap follows the existing `@oss/env/*` pattern and loads without db/auth dependencies
-- [ ] The guided UI includes a step that creates the client owner in-memory and renders DID artifacts
-- [ ] One app-level integration test verifies this first step is executable in-browser
+- [x] `apps/identity-demo` runs with the same monorepo workflow as existing apps (`dev`, `build`, `start`)
+- [x] Env bootstrap follows the existing `@oss/env/*` pattern and loads without db/auth dependencies
+- [x] The guided UI includes a step that creates the client owner in-memory and renders DID artifacts
+- [x] One app-level integration test verifies this first step is executable in-browser
 
 ## Blocked by
 
