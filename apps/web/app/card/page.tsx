@@ -1,4 +1,4 @@
-import { Z3Card } from "@/app/z3-card/z3-card";
+import { Z3Card } from "@/app/card/card";
 
 export default function Page() {
 	return (
