@@ -37,7 +37,30 @@ export async function POST() {
 		);
 	}
 
+	if (!session.clientAgent) {
+		return NextResponse.json(
+			{
+				error:
+					"Client and server agents must exist before running identity verification.",
+			},
+			{ status: 400 }
+		);
+	}
+
+	if (!session.serverAgent) {
+		return NextResponse.json(
+			{
+				error:
+					"Client and server agents must exist before running identity verification.",
+			},
+			{ status: 400 }
+		);
+	}
+
 	const resolver = getDidResolver();
+	// Cache agent DID docs so controller claims are available during VC verification.
+	resolver.addToCache(session.clientAgent.did, session.clientAgent.didDocument);
+	resolver.addToCache(session.serverAgent.did, session.serverAgent.didDocument);
 	const log: string[] = [];
 
 	// — Step 1: server agent verifies client's ownership VC —
