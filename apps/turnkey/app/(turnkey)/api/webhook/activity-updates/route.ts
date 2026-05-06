@@ -1,3 +1,4 @@
+import { env } from "@oss/env/turnkey";
 import { NextResponse } from "next/server";
 import { getActivityEventStore } from "@/lib/activity-events";
 import type { ActivityWebhookPayload } from "@/lib/types";
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
 
 	// Ignore activities from the parent org (e.g. OTP_LOGIN, CREATE_SUB_ORGANIZATION).
 	// Only sub-org activities (agent signing requests) are relevant here.
-	if (payload.organizationId === process.env.NEXT_PUBLIC_ORGANIZATION_ID) {
+	if (payload.organizationId === env.NEXT_PUBLIC_ORGANIZATION_ID) {
 		return NextResponse.json({ ok: true, skipped: true });
 	}
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@oss/env/turnkey";
 import {
 	AuthState,
 	useTurnkey,
@@ -38,12 +39,12 @@ const POLICY_NAMES = [
 	"agent-self-delete",
 ];
 
-function requiredClientEnv(name: string): string {
-	const value = process.env[name]?.trim();
-	if (!value) {
+function requiredClientEnv(value: string | undefined, name: string): string {
+	const normalized = value?.trim();
+	if (!normalized) {
 		throw new Error(`Missing ${name}. Add it to your .env.local file.`);
 	}
-	return value;
+	return normalized;
 }
 
 export default function SetupPage() {
@@ -88,7 +89,7 @@ export default function SetupPage() {
 		}
 
 		const orgId = session.organizationId;
-		const agentPublicKey = process.env.NEXT_PUBLIC_AGENT_API_PUBLIC_KEY;
+		const agentPublicKey = env.NEXT_PUBLIC_AGENT_API_PUBLIC_KEY;
 		if (!agentPublicKey) {
 			return;
 		}
@@ -146,12 +147,15 @@ export default function SetupPage() {
 		setErr(null);
 		try {
 			const agentPublicKey = requiredClientEnv(
+				env.NEXT_PUBLIC_AGENT_API_PUBLIC_KEY,
 				"NEXT_PUBLIC_AGENT_API_PUBLIC_KEY"
 			);
 			const allowedRecipient = requiredClientEnv(
+				env.NEXT_PUBLIC_ALLOWED_RECIPIENT,
 				"NEXT_PUBLIC_ALLOWED_RECIPIENT"
 			);
 			const approvalRecipient = requiredClientEnv(
+				env.NEXT_PUBLIC_APPROVAL_RECIPIENT,
 				"NEXT_PUBLIC_APPROVAL_RECIPIENT"
 			);
 
@@ -272,21 +276,15 @@ export default function SetupPage() {
 					/>
 					<InfoRow
 						label="Agent public key"
-						value={
-							process.env.NEXT_PUBLIC_AGENT_API_PUBLIC_KEY ?? "(not configured)"
-						}
+						value={env.NEXT_PUBLIC_AGENT_API_PUBLIC_KEY ?? "(not configured)"}
 					/>
 					<InfoRow
 						label="Allowed recipient"
-						value={
-							process.env.NEXT_PUBLIC_ALLOWED_RECIPIENT ?? "(not configured)"
-						}
+						value={env.NEXT_PUBLIC_ALLOWED_RECIPIENT ?? "(not configured)"}
 					/>
 					<InfoRow
 						label="Approval recipient"
-						value={
-							process.env.NEXT_PUBLIC_APPROVAL_RECIPIENT ?? "(not configured)"
-						}
+						value={env.NEXT_PUBLIC_APPROVAL_RECIPIENT ?? "(not configured)"}
 					/>
 				</section>
 

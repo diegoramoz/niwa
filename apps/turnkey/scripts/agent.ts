@@ -1,7 +1,5 @@
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { env } from "@oss/env/turnkey";
 import { Turnkey as TurnkeyServerSDK } from "@turnkey/sdk-server";
-import { config as dotenvConfig } from "dotenv";
 
 const CAIP2_SEPOLIA = "eip155:11155111";
 const POLL_INTERVAL_MS = 2000;
@@ -161,8 +159,14 @@ async function runTransactionScenario(
 	walletAddress: string,
 	organizationId: string
 ) {
-	const allowedRecipient = requiredEnv("NEXT_PUBLIC_ALLOWED_RECIPIENT");
-	const approvalRecipient = requiredEnv("NEXT_PUBLIC_APPROVAL_RECIPIENT");
+	const allowedRecipient = requiredEnv(
+		env.NEXT_PUBLIC_ALLOWED_RECIPIENT,
+		"NEXT_PUBLIC_ALLOWED_RECIPIENT"
+	);
+	const approvalRecipient = requiredEnv(
+		env.NEXT_PUBLIC_APPROVAL_RECIPIENT,
+		"NEXT_PUBLIC_APPROVAL_RECIPIENT"
+	);
 	const toAddress = resolveRecipient(
 		scenario,
 		allowedRecipient,
@@ -233,31 +237,26 @@ async function runTransactionScenario(
 	);
 }
 
-function loadEnv() {
-	for (const file of [".env", ".env.local"]) {
-		const envPath = resolve(process.cwd(), file);
-		if (existsSync(envPath)) {
-			dotenvConfig({ path: envPath, override: file === ".env.local" });
-		}
-	}
-}
-
-function requiredEnv(name: string): string {
-	const value = process.env[name]?.trim();
-	if (!value) {
+function requiredEnv(value: string | undefined, name: string): string {
+	const normalized = value?.trim();
+	if (!normalized) {
 		throw new Error(`Missing ${name}. Add it to your .env.local file.`);
 	}
-	return value;
+	return normalized;
 }
 
 async function main() {
-	loadEnv();
 	const { scenario, walletAddress, organizationId } = parseArgs();
 
-	const apiPublicKey = requiredEnv("NEXT_PUBLIC_AGENT_API_PUBLIC_KEY");
-	const apiPrivateKey = requiredEnv("AGENT_API_PRIVATE_KEY");
-	const baseUrl =
-		process.env.NEXT_PUBLIC_BASE_URL?.trim() || "https://api.turnkey.com";
+	const apiPublicKey = requiredEnv(
+		env.NEXT_PUBLIC_AGENT_API_PUBLIC_KEY,
+		"NEXT_PUBLIC_AGENT_API_PUBLIC_KEY"
+	);
+	const apiPrivateKey = requiredEnv(
+		env.AGENT_API_PRIVATE_KEY,
+		"AGENT_API_PRIVATE_KEY"
+	);
+	const baseUrl = env.NEXT_PUBLIC_BASE_URL ?? "https://api.turnkey.com";
 
 	const agentClient = new TurnkeyServerSDK({
 		apiBaseUrl: baseUrl,

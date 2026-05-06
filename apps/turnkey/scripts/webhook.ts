@@ -1,30 +1,9 @@
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { env } from "@oss/env/turnkey";
 import { Turnkey as TurnkeyServerSDK } from "@turnkey/sdk-server";
-import { config as dotenvConfig } from "dotenv";
 
 const ACTIVITY_UPDATES_EVENT = "ACTIVITY_UPDATES";
 
-function loadEnv() {
-	for (const file of [".env", ".env.local"]) {
-		const envPath = resolve(process.cwd(), file);
-		if (existsSync(envPath)) {
-			dotenvConfig({ path: envPath, override: file === ".env.local" });
-		}
-	}
-}
-
-function requiredEnv(name: string): string {
-	const value = process.env[name]?.trim();
-	if (!value) {
-		throw new Error(`Missing ${name}. Add it to your .env.local file.`);
-	}
-	return value;
-}
-
 async function main() {
-	loadEnv();
-
 	const command = process.argv[2];
 
 	if (command !== "-register" && command !== "-update") {
@@ -36,12 +15,11 @@ async function main() {
 		process.exit(1);
 	}
 
-	const organizationId = requiredEnv("NEXT_PUBLIC_ORGANIZATION_ID");
-	const apiPublicKey = requiredEnv("API_PUBLIC_KEY");
-	const apiPrivateKey = requiredEnv("API_PRIVATE_KEY");
-	const webhookUrl = requiredEnv("WEBHOOK_URL");
-	const baseUrl =
-		process.env.NEXT_PUBLIC_BASE_URL?.trim() || "https://api.turnkey.com";
+	const organizationId = env.NEXT_PUBLIC_ORGANIZATION_ID;
+	const apiPublicKey = env.API_PUBLIC_KEY;
+	const apiPrivateKey = env.API_PRIVATE_KEY;
+	const webhookUrl = env.WEBHOOK_URL;
+	const baseUrl = env.NEXT_PUBLIC_BASE_URL ?? "https://api.turnkey.com";
 
 	const turnkey = new TurnkeyServerSDK({
 		apiBaseUrl: baseUrl,
@@ -52,7 +30,7 @@ async function main() {
 
 	if (command === "-register") {
 		const webhookName =
-			process.env.WEBHOOK_NAME?.trim() || `agent-wallet-webhook-${Date.now()}`;
+			env.WEBHOOK_NAME?.trim() || `agent-wallet-webhook-${Date.now()}`;
 
 		const response = await turnkey.apiClient().createWebhookEndpoint({
 			organizationId,

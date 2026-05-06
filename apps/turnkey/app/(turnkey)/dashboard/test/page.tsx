@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@oss/env/turnkey";
 import {
 	AuthState,
 	useTurnkey,
@@ -280,8 +281,7 @@ export default function TestPage() {
 							<span className="font-medium text-green-700">Allowed</span> —
 							agent signs to{" "}
 							<code className="font-mono">
-								{process.env.NEXT_PUBLIC_ALLOWED_RECIPIENT ??
-									"ALLOWED_RECIPIENT"}
+								{env.NEXT_PUBLIC_ALLOWED_RECIPIENT ?? "ALLOWED_RECIPIENT"}
 							</code>{" "}
 							freely (Policy A, 1-of-1 consensus). Completes immediately.
 						</li>
@@ -291,8 +291,7 @@ export default function TestPage() {
 							</span>{" "}
 							— agent signs to{" "}
 							<code className="font-mono">
-								{process.env.NEXT_PUBLIC_APPROVAL_RECIPIENT ??
-									"APPROVAL_RECIPIENT"}
+								{env.NEXT_PUBLIC_APPROVAL_RECIPIENT ?? "APPROVAL_RECIPIENT"}
 							</code>{" "}
 							and the activity sits in{" "}
 							<code className="font-mono">CONSENSUS_NEEDED</code> until you

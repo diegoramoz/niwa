@@ -1,9 +1,9 @@
 {
-  "name": "turnkey",
+  "name": "template",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "portless turnkey next dev",
+    "dev": "portless template next dev",
     "build": "next build",
     "start": "next start"
   },

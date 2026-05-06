@@ -1,5 +1,8 @@
 import { EventEmitter } from "node:events";
-import type { ActivityEventEnvelope, ActivityWebhookPayload } from "./types";
+import type {
+	ActivityEventEnvelope,
+	ActivityWebhookPayload,
+} from "@/lib/types";
 
 const ACTIVITY_EVENT = "activity";
 const MAX_RECENT_EVENTS = 50;

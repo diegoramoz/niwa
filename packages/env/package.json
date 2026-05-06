@@ -8,7 +8,8 @@
     "./finance": "./src/finance.ts",
     "./web": "./src/web.ts",
     "./native": "./src/native.ts",
-    "./identity-demo": "./src/identity-demo.ts"
+    "./identity-demo": "./src/identity-demo.ts",
+    "./turnkey": "./src/turnkey.ts"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.1",

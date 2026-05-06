@@ -1,5 +1,7 @@
 "use client";
 
+import { env } from "@oss/env/turnkey";
+import { Toaster } from "@oss/ui/components/sonner";
 import {
 	type CreateSubOrgParams,
 	TurnkeyProvider,
@@ -10,8 +12,8 @@ import { useMemo } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
-	const organizationId = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
-	const authProxyConfigId = process.env.NEXT_PUBLIC_AUTH_PROXY_CONFIG_ID;
+	const organizationId = env.NEXT_PUBLIC_ORGANIZATION_ID;
+	const authProxyConfigId = env.NEXT_PUBLIC_AUTH_PROXY_CONFIG_ID;
 
 	if (!(organizationId && authProxyConfigId)) {
 		throw new Error(
@@ -60,6 +62,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 			config={turnkeyConfig}
 		>
 			{children}
+			<Toaster richColors />
 		</TurnkeyProvider>
 	);
 }
