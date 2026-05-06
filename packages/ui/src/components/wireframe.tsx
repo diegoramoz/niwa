@@ -2,7 +2,7 @@
 
 import { cn } from "@oss/ui/lib/utils";
 import type { ClassValue } from "clsx";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useSyncExternalStore } from "react";
 
 const defaults = {
 	mobileBreakpoint: 768,
@@ -63,16 +63,14 @@ export function useWireframe() {
 }
 
 function useWindowWidth() {
-	const [width, setWidth] = useState<number | null>(null);
-
-	useEffect(() => {
-		setWidth(window.innerWidth);
-		const handler = () => setWidth(window.innerWidth);
-		window.addEventListener("resize", handler);
-		return () => window.removeEventListener("resize", handler);
-	}, []);
-
-	return width;
+	return useSyncExternalStore(
+		(onStoreChange) => {
+			window.addEventListener("resize", onStoreChange);
+			return () => window.removeEventListener("resize", onStoreChange);
+		},
+		() => window.innerWidth,
+		() => null
+	);
 }
 
 type WireframeCornerOptions = "navbar" | "sidebar";
