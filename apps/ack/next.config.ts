@@ -1,7 +1,8 @@
-import "@oss/env/ack";
+// import "@oss/env/template";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+	typedRoutes: true,
 	reactCompiler: true,
 };
 

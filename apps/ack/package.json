@@ -5,27 +5,33 @@
   "scripts": {
     "dev": "portless ack next dev",
     "build": "next build",
-    "start": "next start",
-    "test": "vitest"
+    "start": "next start"
   },
   "dependencies": {
+    "@icons-pack/react-simple-icons": "catalog:",
     "@oss/env": "workspace:*",
+    "@oss/seo": "workspace:*",
     "@oss/shared": "workspace:*",
     "@oss/ui": "workspace:*",
-    "agentcommercekit": "^0.10.1",
+    "@tanstack/react-form": "catalog:",
+    "@tanstack/react-query": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "next-themes": "catalog:",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-icons": "^5.6.0",
+    "sonner": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@oss/config": "workspace:*",
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "^20",
-    "@types/react": "^19.2.10",
+    "@tailwindcss/postcss": "^4.2.4",
+    "@tanstack/react-query-devtools": "^5.99.2",
+    "@types/node": "^20.19.39",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "catalog:",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5",
-    "vitest": "^3.2.0"
+    "tailwindcss": "^4.2.4",
+    "typescript": "^5.9.3"
   }
 }
