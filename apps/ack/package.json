@@ -18,8 +18,8 @@
     "lucide-react": "catalog:",
     "next": "catalog:",
     "next-themes": "catalog:",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-icons": "^5.6.0",
     "sonner": "catalog:",
     "zod": "catalog:"
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@oss/config": "workspace:*",
     "@tailwindcss/postcss": "^4.2.4",
-    "@tanstack/react-query-devtools": "^5.99.2",
+    "@tanstack/react-query-devtools": "^5.100.9",
     "@types/node": "^20.19.39",
     "@types/react": "^19.2.14",
     "@types/react-dom": "catalog:",

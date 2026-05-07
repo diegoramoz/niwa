@@ -1,91 +1,41 @@
 "use client";
 
 import { ChevronRight, Loader2, ShieldAlert, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useIdentityFlow } from "./_state/use-identity-flow";
 
 import { ArtifactBlock } from "./artifact-block";
 import { StepCard } from "./step-card";
-import type { ChatResult, VerifyResult } from "./types";
 
 /**
  * Step 7: Verified interaction gate with haiku fulfillment.
  * Shows the blocked state, the DID exchange, and the fulfilled haiku.
  */
 export function InteractionGateStep() {
-	const [blockedResult, setBlockedResult] = useState<ChatResult | null>(null);
-	const [blockedLoading, setBlockedLoading] = useState(false);
+	const {
+		interaction,
+		requests,
+		setChatMessage,
+		attemptBlockedChat,
+		verifyIdentity,
+		sendChat,
+		attemptBlockedChatLoading,
+		verifyIdentityLoading,
+		sendChatLoading,
+	} = useIdentityFlow();
 
-	const [verifyLoading, setVerifyLoading] = useState(false);
-	const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
-	const [verifyError, setVerifyError] = useState<string | null>(null);
+	const blockedResult = interaction.blockedResult;
+	const verifyResult = interaction.verifyResult;
+	const chatResult = interaction.chatResult;
+	const chatMessage = interaction.chatMessage;
 
-	const [chatMessage, setChatMessage] = useState("Write me a haiku");
-	const [chatLoading, setChatLoading] = useState(false);
-	const [chatResult, setChatResult] = useState<ChatResult | null>(null);
-	const [chatError, setChatError] = useState<string | null>(null);
+	const verifyError =
+		requests.verifyIdentity.status === "error"
+			? requests.verifyIdentity.error
+			: null;
+	const chatError =
+		requests.sendChat.status === "error" ? requests.sendChat.error : null;
 
-	async function handleAttemptBlocked() {
-		setBlockedLoading(true);
-		setBlockedResult(null);
-		try {
-			const res = await fetch("/api/agents/server/chat", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ message: chatMessage || "Write me a haiku" }),
-			});
-			const data = (await res.json()) as ChatResult;
-			setBlockedResult(data);
-		} catch (err) {
-			setBlockedResult({
-				blocked: true,
-				reason: err instanceof Error ? err.message : "Unknown error",
-			});
-		} finally {
-			setBlockedLoading(false);
-		}
-	}
-
-	async function handleVerify() {
-		setVerifyLoading(true);
-		setVerifyError(null);
-		setVerifyResult(null);
-		setChatResult(null);
-		try {
-			const res = await fetch("/api/interact", { method: "POST" });
-			const data = (await res.json()) as VerifyResult & { error?: string };
-			if (!res.ok) {
-				throw new Error(data.error ?? `Server error: ${res.status}`);
-			}
-			setVerifyResult(data);
-		} catch (err) {
-			setVerifyError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setVerifyLoading(false);
-		}
-	}
-
-	async function handleChat() {
-		setChatLoading(true);
-		setChatError(null);
-		setChatResult(null);
-		try {
-			const res = await fetch("/api/agents/server/chat", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ message: chatMessage || "Write me a haiku" }),
-			});
-			const data = (await res.json()) as ChatResult;
-			if (res.status !== 403 && !res.ok) {
-				const errBody = data as unknown as { error?: string };
-				throw new Error(errBody.error ?? `Server error: ${res.status}`);
-			}
-			setChatResult(data);
-		} catch (err) {
-			setChatError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setChatLoading(false);
-		}
-	}
+	const chatInputLoading = attemptBlockedChatLoading || sendChatLoading;
 
 	const isDone = !!chatResult && !chatResult.blocked;
 
@@ -110,6 +60,7 @@ export function InteractionGateStep() {
 				<div className="flex items-center gap-2">
 					<input
 						className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+						disabled={chatInputLoading}
 						onChange={(e) => setChatMessage(e.target.value)}
 						placeholder="Write me a haiku"
 						type="text"
@@ -117,11 +68,11 @@ export function InteractionGateStep() {
 					/>
 					<button
 						className="inline-flex items-center gap-2 rounded-md bg-muted px-3 py-1.5 font-medium text-sm transition-colors hover:bg-muted/80 disabled:cursor-not-allowed disabled:opacity-50"
-						disabled={blockedLoading}
-						onClick={handleAttemptBlocked}
+						disabled={attemptBlockedChatLoading}
+						onClick={attemptBlockedChat}
 						type="button"
 					>
-						{blockedLoading ? (
+						{attemptBlockedChatLoading ? (
 							<Loader2 className="h-3.5 w-3.5 animate-spin" />
 						) : (
 							<ChevronRight className="h-3.5 w-3.5" />
@@ -165,11 +116,11 @@ export function InteractionGateStep() {
 				{!verifyResult && (
 					<button
 						className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-						disabled={verifyLoading}
-						onClick={handleVerify}
+						disabled={verifyIdentityLoading}
+						onClick={verifyIdentity}
 						type="button"
 					>
-						{verifyLoading ? (
+						{verifyIdentityLoading ? (
 							<>
 								<Loader2 className="h-4 w-4 animate-spin" />
 								Verifying...
@@ -200,7 +151,8 @@ export function InteractionGateStep() {
 						</ArtifactBlock>
 						<button
 							className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-							onClick={handleVerify}
+							disabled={verifyIdentityLoading}
+							onClick={verifyIdentity}
 							type="button"
 						>
 							Re-run verification
@@ -221,11 +173,11 @@ export function InteractionGateStep() {
 					{!chatResult && (
 						<button
 							className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={chatLoading}
-							onClick={handleChat}
+							disabled={sendChatLoading}
+							onClick={sendChat}
 							type="button"
 						>
-							{chatLoading ? (
+							{sendChatLoading ? (
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
 									Sending...
@@ -265,7 +217,8 @@ export function InteractionGateStep() {
 							)}
 							<button
 								className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-								onClick={handleChat}
+								disabled={sendChatLoading}
+								onClick={sendChat}
 								type="button"
 							>
 								Send again

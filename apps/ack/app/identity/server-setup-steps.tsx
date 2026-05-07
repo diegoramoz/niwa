@@ -1,92 +1,45 @@
 "use client";
 
 import { ChevronRight, Loader2, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useIdentityFlow } from "./_state/use-identity-flow";
 
 import { ArtifactBlock } from "./artifact-block";
 import { InteractionGateStep } from "./interaction-gate-step";
 import { StepCard } from "./step-card";
-import type { IdentityArtifacts, VcArtifacts } from "./types";
 
 /**
  * Steps 4-7: server owner, server agent, server ownership VC issuance,
  * and the verified interaction gate.
  */
 export function ServerSetupSteps() {
-	const [serverOwnerLoading, setServerOwnerLoading] = useState(false);
-	const [serverOwner, setServerOwner] = useState<IdentityArtifacts | null>(
-		null
-	);
-	const [serverOwnerError, setServerOwnerError] = useState<string | null>(null);
+	const {
+		setup,
+		requests,
+		createServerOwner,
+		createServerOwnerLoading,
+		createServerAgent,
+		createServerAgentLoading,
+		issueServerVc,
+		issueServerVcLoading,
+		showInteractionGate,
+	} = useIdentityFlow();
 
-	const [serverAgentLoading, setServerAgentLoading] = useState(false);
-	const [serverAgent, setServerAgent] = useState<IdentityArtifacts | null>(
-		null
-	);
-	const [serverAgentError, setServerAgentError] = useState<string | null>(null);
+	const serverOwner = setup.serverOwner;
+	const serverAgent = setup.serverAgent;
+	const serverVc = setup.serverVc;
 
-	const [serverVcLoading, setServerVcLoading] = useState(false);
-	const [serverVc, setServerVc] = useState<VcArtifacts | null>(null);
-	const [serverVcError, setServerVcError] = useState<string | null>(null);
-
-	async function handleCreateServerOwner() {
-		setServerOwnerLoading(true);
-		setServerOwnerError(null);
-		setServerOwner(null);
-		setServerAgent(null);
-		try {
-			const res = await fetch("/api/owners/server", { method: "POST" });
-			if (!res.ok) {
-				const body = (await res.json()) as { error?: string };
-				throw new Error(body.error ?? `Server error: ${res.status}`);
-			}
-			const data = (await res.json()) as IdentityArtifacts;
-			setServerOwner(data);
-		} catch (err) {
-			setServerOwnerError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setServerOwnerLoading(false);
-		}
-	}
-
-	async function handleCreateServerAgent() {
-		setServerAgentLoading(true);
-		setServerAgentError(null);
-		setServerAgent(null);
-		setServerVc(null);
-		try {
-			const res = await fetch("/api/agents/server", { method: "POST" });
-			if (!res.ok) {
-				const body = (await res.json()) as { error?: string };
-				throw new Error(body.error ?? `Server error: ${res.status}`);
-			}
-			const data = (await res.json()) as IdentityArtifacts;
-			setServerAgent(data);
-		} catch (err) {
-			setServerAgentError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setServerAgentLoading(false);
-		}
-	}
-
-	async function handleIssueServerVC() {
-		setServerVcLoading(true);
-		setServerVcError(null);
-		setServerVc(null);
-		try {
-			const res = await fetch("/api/vc/issue/server", { method: "POST" });
-			if (!res.ok) {
-				const body = (await res.json()) as { error?: string };
-				throw new Error(body.error ?? `Server error: ${res.status}`);
-			}
-			const data = (await res.json()) as VcArtifacts;
-			setServerVc(data);
-		} catch (err) {
-			setServerVcError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setServerVcLoading(false);
-		}
-	}
+	const serverOwnerError =
+		requests.createServerOwner.status === "error"
+			? requests.createServerOwner.error
+			: null;
+	const serverAgentError =
+		requests.createServerAgent.status === "error"
+			? requests.createServerAgent.error
+			: null;
+	const serverVcError =
+		requests.issueServerVc.status === "error"
+			? requests.issueServerVc.error
+			: null;
 
 	return (
 		<>
@@ -101,11 +54,11 @@ export function ServerSetupSteps() {
 				{!serverOwner && (
 					<button
 						className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-						disabled={serverOwnerLoading}
-						onClick={handleCreateServerOwner}
+						disabled={createServerOwnerLoading}
+						onClick={createServerOwner}
 						type="button"
 					>
-						{serverOwnerLoading ? (
+						{createServerOwnerLoading ? (
 							<>
 								<Loader2 className="h-4 w-4 animate-spin" />
 								Generating...
@@ -135,7 +88,8 @@ export function ServerSetupSteps() {
 						</ArtifactBlock>
 						<button
 							className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-							onClick={handleCreateServerOwner}
+							disabled={createServerOwnerLoading}
+							onClick={createServerOwner}
 							type="button"
 						>
 							Re-generate
@@ -156,11 +110,11 @@ export function ServerSetupSteps() {
 					{!serverAgent && (
 						<button
 							className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={serverAgentLoading}
-							onClick={handleCreateServerAgent}
+							disabled={createServerAgentLoading}
+							onClick={createServerAgent}
 							type="button"
 						>
-							{serverAgentLoading ? (
+							{createServerAgentLoading ? (
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
 									Generating...
@@ -190,7 +144,8 @@ export function ServerSetupSteps() {
 							</ArtifactBlock>
 							<button
 								className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-								onClick={handleCreateServerAgent}
+								disabled={createServerAgentLoading}
+								onClick={createServerAgent}
 								type="button"
 							>
 								Re-generate
@@ -217,11 +172,11 @@ export function ServerSetupSteps() {
 					{!serverVc && (
 						<button
 							className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={serverVcLoading}
-							onClick={handleIssueServerVC}
+							disabled={issueServerVcLoading}
+							onClick={issueServerVc}
 							type="button"
 						>
-							{serverVcLoading ? (
+							{issueServerVcLoading ? (
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
 									Issuing...
@@ -265,7 +220,8 @@ export function ServerSetupSteps() {
 							</ArtifactBlock>
 							<button
 								className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-								onClick={handleIssueServerVC}
+								disabled={issueServerVcLoading}
+								onClick={issueServerVc}
 								type="button"
 							>
 								Re-issue
@@ -275,7 +231,7 @@ export function ServerSetupSteps() {
 				</StepCard>
 			)}
 
-			{serverVc && <InteractionGateStep />}
+			{showInteractionGate && <InteractionGateStep />}
 		</>
 	);
 }

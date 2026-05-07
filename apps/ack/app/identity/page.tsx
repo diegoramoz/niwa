@@ -1,82 +1,40 @@
 "use client";
 
 import { ChevronRight, Loader2, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useIdentityFlow } from "./_state/use-identity-flow";
 import { ArtifactBlock } from "./artifact-block";
 import { ServerSetupSteps } from "./server-setup-steps";
 import { StepCard } from "./step-card";
-import type { IdentityArtifacts, VcArtifacts } from "./types";
 
 export default function DemoPage() {
-	const [ownerLoading, setOwnerLoading] = useState(false);
-	const [owner, setOwner] = useState<IdentityArtifacts | null>(null);
-	const [ownerError, setOwnerError] = useState<string | null>(null);
+	const {
+		setup,
+		requests,
+		createClientOwner,
+		createClientOwnerLoading,
+		createClientAgent,
+		createClientAgentLoading,
+		issueClientVc,
+		issueClientVcLoading,
+		showServerSetup,
+	} = useIdentityFlow();
 
-	const [agentLoading, setAgentLoading] = useState(false);
-	const [agent, setAgent] = useState<IdentityArtifacts | null>(null);
-	const [agentError, setAgentError] = useState<string | null>(null);
+	const ownerError =
+		requests.createClientOwner.status === "error"
+			? requests.createClientOwner.error
+			: null;
+	const agentError =
+		requests.createClientAgent.status === "error"
+			? requests.createClientAgent.error
+			: null;
+	const vcError =
+		requests.issueClientVc.status === "error"
+			? requests.issueClientVc.error
+			: null;
 
-	const [vcLoading, setVcLoading] = useState(false);
-	const [vc, setVc] = useState<VcArtifacts | null>(null);
-	const [vcError, setVcError] = useState<string | null>(null);
-
-	async function handleInitialise() {
-		setOwnerLoading(true);
-		setOwnerError(null);
-		setOwner(null);
-		setAgent(null);
-		setVc(null);
-		try {
-			const res = await fetch("/api/session", { method: "POST" });
-			if (!res.ok) {
-				throw new Error(`Server error: ${res.status}`);
-			}
-			const data = (await res.json()) as IdentityArtifacts;
-			setOwner(data);
-		} catch (err) {
-			setOwnerError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setOwnerLoading(false);
-		}
-	}
-
-	async function handleCreateAgent() {
-		setAgentLoading(true);
-		setAgentError(null);
-		setVc(null);
-		try {
-			const res = await fetch("/api/agents/client", { method: "POST" });
-			if (!res.ok) {
-				const body = (await res.json()) as { error?: string };
-				throw new Error(body.error ?? `Server error: ${res.status}`);
-			}
-			const data = (await res.json()) as IdentityArtifacts;
-			setAgent(data);
-		} catch (err) {
-			setAgentError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setAgentLoading(false);
-		}
-	}
-
-	async function handleIssueVC() {
-		setVcLoading(true);
-		setVcError(null);
-		setVc(null);
-		try {
-			const res = await fetch("/api/vc/issue", { method: "POST" });
-			if (!res.ok) {
-				const body = (await res.json()) as { error?: string };
-				throw new Error(body.error ?? `Server error: ${res.status}`);
-			}
-			const data = (await res.json()) as VcArtifacts;
-			setVc(data);
-		} catch (err) {
-			setVcError(err instanceof Error ? err.message : "Unknown error");
-		} finally {
-			setVcLoading(false);
-		}
-	}
+	const owner = setup.clientOwner;
+	const agent = setup.clientAgent;
+	const vc = setup.clientVc;
 
 	return (
 		<main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
@@ -105,11 +63,11 @@ export default function DemoPage() {
 				{!owner && (
 					<button
 						className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-						disabled={ownerLoading}
-						onClick={handleInitialise}
+						disabled={createClientOwnerLoading}
+						onClick={createClientOwner}
 						type="button"
 					>
-						{ownerLoading ? (
+						{createClientOwnerLoading ? (
 							<>
 								<Loader2 className="h-4 w-4 animate-spin" />
 								Generating...
@@ -137,7 +95,8 @@ export default function DemoPage() {
 						</ArtifactBlock>
 						<button
 							className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-							onClick={handleInitialise}
+							disabled={createClientOwnerLoading}
+							onClick={createClientOwner}
 							type="button"
 						>
 							Re-generate
@@ -159,11 +118,11 @@ export default function DemoPage() {
 					{!agent && (
 						<button
 							className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={agentLoading}
-							onClick={handleCreateAgent}
+							disabled={createClientAgentLoading}
+							onClick={createClientAgent}
 							type="button"
 						>
-							{agentLoading ? (
+							{createClientAgentLoading ? (
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
 									Generating...
@@ -191,7 +150,8 @@ export default function DemoPage() {
 							</ArtifactBlock>
 							<button
 								className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-								onClick={handleCreateAgent}
+								disabled={createClientAgentLoading}
+								onClick={createClientAgent}
 								type="button"
 							>
 								Re-generate
@@ -216,11 +176,11 @@ export default function DemoPage() {
 					{!vc && (
 						<button
 							className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={vcLoading}
-							onClick={handleIssueVC}
+							disabled={issueClientVcLoading}
+							onClick={issueClientVc}
 							type="button"
 						>
-							{vcLoading ? (
+							{issueClientVcLoading ? (
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
 									Issuing...
@@ -262,7 +222,8 @@ export default function DemoPage() {
 							<ArtifactBlock label="Ownership VC (JWT)">{vc.jwt}</ArtifactBlock>
 							<button
 								className="text-muted-foreground text-xs underline transition-colors hover:text-foreground"
-								onClick={handleIssueVC}
+								disabled={issueClientVcLoading}
+								onClick={issueClientVc}
 								type="button"
 							>
 								Re-issue
@@ -272,7 +233,7 @@ export default function DemoPage() {
 				</StepCard>
 			)}
 
-			{vc && <ServerSetupSteps />}
+			{showServerSetup && <ServerSetupSteps />}
 		</main>
 	);
 }
