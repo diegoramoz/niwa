@@ -102,7 +102,7 @@ The haiku exchange stays in the migrated demo because it proves that fulfillment
 ## Proposed Module Shape
 
 ```text
-apps/identity-demo/
+apps/ack/
 ├── package.json
 ├── next.config.ts
 ├── src/

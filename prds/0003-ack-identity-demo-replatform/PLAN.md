@@ -21,19 +21,19 @@
 
 ### What to build
 
-Create a new app under `apps/identity-demo` with the same baseline conventions used by the existing Next apps:
+Create a new app under `apps/ack` with the same baseline conventions used by the existing Next apps:
 
 - `package.json` with `dev`, `build`, and `start` scripts
 - `next.config.ts` with `typedRoutes` and `reactCompiler`
 - `src/app/` app-router structure
-- app-scoped env bootstrap such as `@oss/env/identity-demo`
+- app-scoped env bootstrap such as `@oss/env/ack`
 - any required Tailwind or UI package setup needed to match the app stack
 
 The initial app should render a placeholder guided demo shell and load without depending on database or auth packages.
 
 ### Acceptance criteria
 
-- [ ] `apps/identity-demo` exists and runs with the same monorepo workflow as the other apps
+- [ ] `apps/ack` exists and runs with the same monorepo workflow as the other apps
 - [ ] Env loading follows the same pattern as the existing apps
 - [ ] The app can render a demo shell without accessing a database
 - [ ] The app boundary is isolated from `apps/web` and `apps/finance`

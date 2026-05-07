@@ -1,4 +1,4 @@
-import "@oss/env/identity-demo";
+import "@oss/env/ack";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
