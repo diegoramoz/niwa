@@ -5,6 +5,8 @@ import { cn } from "@oss/ui/lib/utils";
 import { generateMetadata } from "lib/seo";
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "next-themes";
+import { AppBottomNav } from "@/components/app-bottom-nav";
+import { AppTopNav } from "@/components/app-top-nav";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -49,7 +51,11 @@ export default function RootLayout({
 					disableTransitionOnChange
 					enableSystem
 				>
-					<Wireframe>{children}</Wireframe>
+					<Wireframe>
+						<AppTopNav />
+						<AppBottomNav />
+						{children}
+					</Wireframe>
 				</ThemeProvider>
 			</body>
 		</html>
