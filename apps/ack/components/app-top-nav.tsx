@@ -11,7 +11,7 @@ export function AppTopNav() {
 
 	return (
 		<WireframeNav
-			className="hidden items-center justify-between border-b bg-background/95 px-4 backdrop-blur md:flex"
+			className="hidden items-center justify-between border-b bg-background/95 px-4 py-2 backdrop-blur md:flex"
 			hideOn="mobile"
 			position="top"
 		>
@@ -19,11 +19,8 @@ export function AppTopNav() {
 				<div className="flex h-9 w-9 items-center justify-center rounded-lg border bg-muted font-semibold text-sm">
 					ACK
 				</div>
-				<div className="min-w-0">
+				<div className="hidden min-w-0 lg:block">
 					<p className="truncate font-semibold text-sm">Agent Commerce Kit</p>
-					<p className="truncate text-muted-foreground text-xs">
-						Demo navigation
-					</p>
 				</div>
 			</div>
 
