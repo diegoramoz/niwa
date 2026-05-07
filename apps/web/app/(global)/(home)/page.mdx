@@ -1,18 +1,21 @@
 <article className="prose prose-neutral dark:prose-invert">
 
-## About Me
+## Diego Ramos
 
-I build safe and scalable web apps at startups.
+A full-stack engineer experienced building apps end-to-end, with a background in blockchain technology.
 
-At Gaias Labs I designed a 57-table database, built 88 endpoints, and shipped a referral system that drove tens of thousands of users. I caught and patched a critical auth vulnerability in production and ran infrastructure on DigitalOcean with BullMQ job queues for real-time data pipelines.
+### Highlights
 
-Stack: Next.js, TypeScript, Postgres, Drizzle ORM, oRPC, Bun, Turborepo
+- Created a MySQL database with 57 tables and an API with 88 endpoints handling real financial transactions
+- Built a referral system that acquired tens of thousands of users
+- Created an AI invoice scanner that returns structured data from invoices
+- Detected a critical security vulnerability with authentication, and patched it
 
 ## Projects
 
 ### [AI Invoice Scanner](https://github.com/diegoramoz/oss) - April 2026
 
-A web app where to submit invoices as PDF or images and [ollama](https://ollama.com) LLM extracts structured data from it. Turning pdfs/images into a queryable Postgres database. The app works with private inference because the LLM runs on a local machine, which is exposed to the internet using a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) + Zero Trust Access.
+A web app to transform invoices into structured data using [ollama](https://ollama.com). Turning pdfs/images into a queryable Postgres database. The app works with private inference because the LLM runs on a local machine, which is exposed to the internet using a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) + Zero Trust Access.
 
 <a href="/finance.gif" rel="noopener" target="_blank">
   <Image alt="AI Invoice Scanner demo" className="rounded-md" height={450} loading="eager" src="/finance.gif" unoptimized width={800} />
