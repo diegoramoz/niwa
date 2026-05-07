@@ -20,5 +20,7 @@
   },
   "menuColor": "default",
   "menuAccent": "subtle",
-  "registries": {}
+  "registries": {
+    "@ramoz": "https://ramoz.dev/r/{name}.json"
+  }
 }
