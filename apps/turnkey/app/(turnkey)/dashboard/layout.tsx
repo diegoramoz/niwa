@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
@@ -23,7 +22,7 @@ export default function DashboardLayout({
 				</span>
 				<div className="flex gap-1">
 					{tabs.map((tab) => (
-						<Link
+						<a
 							className={`rounded px-3 py-1.5 font-medium text-xs transition-colors ${
 								pathname === tab.href
 									? "bg-slate-700 text-white"
@@ -33,7 +32,7 @@ export default function DashboardLayout({
 							key={tab.href}
 						>
 							{tab.label}
-						</Link>
+						</a>
 					))}
 				</div>
 			</nav>
