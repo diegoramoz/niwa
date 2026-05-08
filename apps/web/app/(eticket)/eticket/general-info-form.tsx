@@ -1,16 +1,9 @@
 "use client";
 
-import {
-	iso36611Alpha2,
-	iso36611Alpha2Map,
-} from "@oss/shared/enums/country-es";
+import { countries } from "@oss/shared/enums/country";
 import { Button } from "@oss/ui/components/button";
 import { Form, useAppForm } from "@oss/ui/components/form";
 import { generalInfoSchema } from "./general-info-schema";
-
-const compositeCountryItems = iso36611Alpha2.map(
-	(code) => `${code}:${iso36611Alpha2Map[code].displayName}` as const
-);
 
 const travelDirectionItems: [string, string][] = [
 	["entry", "Entrada a la República Dominicana"],
@@ -21,12 +14,16 @@ export function GeneralInfoForm() {
 	const form = useAppForm({
 		defaultValues: {
 			address: "",
-			countryCode: "",
+			countryCode: {
+				id: "",
+				value: "",
+				label: "",
+			},
 			city: "",
 			state: "",
 			postalCode: "",
-			hasLayovers: false,
-			travelDirection: "" as string,
+			hasLayovers: "false",
+			travelDirection: "",
 		},
 		validators: {
 			onChange: generalInfoSchema,
@@ -54,7 +51,7 @@ export function GeneralInfoForm() {
 			<form.AppField name="countryCode">
 				{(field) => (
 					<field.ComboboxInput
-						items={compositeCountryItems}
+						items={countries}
 						schema={generalInfoSchema.shape.countryCode}
 					/>
 				)}
@@ -77,7 +74,10 @@ export function GeneralInfoForm() {
 			<form.AppField name="hasLayovers">
 				{(field) => (
 					<field.ChoiceInput
-						items={[["true", "Sí, hace escalas"]]}
+						items={[
+							["true", "Con escalas"],
+							["false", "Sin escalas"],
+						]}
 						mode="single"
 						schema={generalInfoSchema.shape.hasLayovers}
 					/>

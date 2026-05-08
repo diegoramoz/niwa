@@ -1,4 +1,3 @@
-import { iso36611Alpha2 } from "@oss/shared/enums/country-es";
 import { z } from "zod";
 
 export const generalInfoSchema = z.object({
@@ -6,11 +5,17 @@ export const generalInfoSchema = z.object({
 		.string()
 		.min(1)
 		.meta({ label: "Dirección permanente / residencia" }),
-	countryCode: z.enum(iso36611Alpha2).meta({ label: "País de residencia" }),
+	countryCode: z
+		.object({
+			id: z.string(),
+			label: z.string(),
+			value: z.string(),
+		})
+		.meta({ label: "País de residencia" }),
 	city: z.string().min(1).meta({ label: "Ciudad" }),
-	state: z.string().meta({ label: "Estado" }),
+	state: z.string().min(1).meta({ label: "Estado" }),
 	postalCode: z.string().meta({ label: "Código postal" }),
-	hasLayovers: z.boolean().meta({ label: "¿Hace escalas en otros países?" }),
+	hasLayovers: z.stringbool().meta({ label: "¿Hace escalas en otros países?" }),
 	travelDirection: z
 		.enum(["entry", "exit"])
 		.meta({ label: "Dirección de viaje" }),

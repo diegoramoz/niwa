@@ -12,35 +12,35 @@ import { Label } from "../label";
 import { useFieldContext } from ".";
 import { FieldInfo } from "./field-info";
 
-const normalizeSearchText = (value: string) =>
-	value
-		.normalize("NFD")
-		.replace(/\p{Diacritic}/gu, "")
-		.toLowerCase()
-		.trim();
+// const normalizeSearchText = (value: string) =>
+// 	value
+// 		.normalize("NFD")
+// 		.replace(/\p{Diacritic}/gu, "")
+// 		.toLowerCase()
+// 		.trim();
 
-const fuzzyIncludes = (target: string, query: string) => {
-	const normalizedTarget = normalizeSearchText(target);
-	const normalizedQuery = normalizeSearchText(query);
+// const fuzzyIncludes = (target: string, query: string) => {
+// 	const normalizedTarget = normalizeSearchText(target);
+// 	const normalizedQuery = normalizeSearchText(query);
 
-	if (!normalizedQuery) {
-		return true;
-	}
+// 	if (!normalizedQuery) {
+// 		return true;
+// 	}
 
-	let queryIndex = 0;
+// 	let queryIndex = 0;
 
-	for (const char of normalizedTarget) {
-		if (char === normalizedQuery[queryIndex]) {
-			queryIndex += 1;
-		}
+// 	for (const char of normalizedTarget) {
+// 		if (char === normalizedQuery[queryIndex]) {
+// 			queryIndex += 1;
+// 		}
 
-		if (queryIndex >= normalizedQuery.length) {
-			return true;
-		}
-	}
+// 		if (queryIndex >= normalizedQuery.length) {
+// 			return true;
+// 		}
+// 	}
 
-	return false;
-};
+// 	return false;
+// };
 
 export function ComboboxInput({
 	schema,
@@ -48,10 +48,14 @@ export function ComboboxInput({
 	placeholder,
 }: {
 	schema?: ZodType<unknown, unknown>;
-	items: string[];
+	items: { id: string; label: string; value: string }[];
 	placeholder?: string;
 }) {
-	const field = useFieldContext<string>();
+	const field = useFieldContext<{
+		id: string;
+		label: string;
+		value: string;
+	}>();
 
 	let resolvedPlaceholder = placeholder;
 	if (
@@ -66,13 +70,9 @@ export function ComboboxInput({
 			<Label htmlFor={field.name} schema={schema} />
 
 			<Combobox
-				filter={(value, query) => {
-					const [, displayName] = value.split(":");
-					if (!displayName) {
-						return false;
-					}
-					return fuzzyIncludes(displayName, query);
-				}}
+				// filter={(item, query) => {
+				// 	return fuzzyIncludes(displayName, query);
+				// }}
 				items={items}
 				onValueChange={(e) => e && field.handleChange(e)}
 				value={field.state.value}
@@ -85,14 +85,11 @@ export function ComboboxInput({
 				<ComboboxContent>
 					<ComboboxEmpty>No results found.</ComboboxEmpty>
 					<ComboboxList>
-						{(item) => {
-							const [, displayName] = item.split(":");
-							return (
-								<ComboboxItem key={item} value={item}>
-									{displayName}
-								</ComboboxItem>
-							);
-						}}
+						{(item: { id: string; label: string; value: string }) => (
+							<ComboboxItem key={item.id} value={item}>
+								{item.label}
+							</ComboboxItem>
+						)}
 					</ComboboxList>
 				</ComboboxContent>
 			</Combobox>
