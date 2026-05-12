@@ -8,6 +8,7 @@
     "./finance": "./src/finance.ts",
     "./web": "./src/web.ts",
     "./native": "./src/native.ts",
+    "./circle": "./src/circle.ts",
     "./ack": "./src/ack.ts",
     "./turnkey": "./src/turnkey.ts"
   },
