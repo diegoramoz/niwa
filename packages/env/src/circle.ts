@@ -6,7 +6,9 @@ export const env = createEnv({
 		VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
 		PORT: z.coerce.number().optional(),
 		PRIVATE_KEY: z.string(),
-		CIRCLE_KIT_KEY: z.string().optional(),
+		CIRCLE_KIT_KEY: z.string(),
+		CIRCLE_API_KEY: z.string(),
+		CIRCLE_ENTITY_SECRET: z.string(),
 	},
 	client: {},
 	runtimeEnv: {
@@ -14,6 +16,8 @@ export const env = createEnv({
 		PORT: process.env.PORT,
 		PRIVATE_KEY: process.env.PRIVATE_KEY,
 		CIRCLE_KIT_KEY: process.env.CIRCLE_KIT_KEY,
+		CIRCLE_API_KEY: process.env.CIRCLE_API_KEY,
+		CIRCLE_ENTITY_SECRET: process.env.CIRCLE_ENTITY_SECRET,
 	},
 	emptyStringAsUndefined: true,
 });
