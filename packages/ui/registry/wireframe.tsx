@@ -510,7 +510,7 @@ function WireframeSidebarContent({
 	return (
 		<div
 			className={cn(
-				"min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+				"scrollbar-none min-h-0 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden",
 				className
 			)}
 			data-slot="sidebar-content"
