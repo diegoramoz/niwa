@@ -114,9 +114,9 @@ export function createAuth() {
 			// 		portal(),
 			// 	],
 			// }),
-			nextCookies(),
 			expo(),
 			passkey(),
+			nextCookies(),
 		],
 	});
 }
